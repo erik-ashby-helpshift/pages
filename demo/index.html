@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Golf Clash - Your Game Title</title>
+    <style>
+        /* Reset and basic styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background: url('golf-clash-featured-image-211013.jpg.adapt.crop191x100.1200w.jpg') no-repeat center center fixed;
+            background-size: contain;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 1em;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        nav li {
+            margin-left: 2em;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: url('your-hero-image.jpg') no-repeat center center/cover;
+            height: 100vh;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding-top: 5em; /* Offset for fixed nav */
+        }
+
+        .hero-content h1 {
+            font-size: 4em;
+            margin-bottom: 0.5em;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.5em;
+            margin-bottom: 1em;
+            max-width: 600px;
+        }
+
+        .btn {
+            background: #28a745;
+            color: #fff;
+            padding: 1em 2em;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 1.2em;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #218838;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4em 2em;
+            background: #f9f9f9;
+            text-align: center;
+        }
+
+        .features h2 {
+            margin-bottom: 2em;
+            font-size: 2.5em;
+        }
+
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2em;
+        }
+
+        .feature-item {
+            flex: 1 1 300px;
+            max-width: 300px;
+            text-align: left;
+        }
+
+        .feature-item img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .feature-item h3 {
+            margin-top: 1em;
+            font-size: 1.5em;
+        }
+
+        .feature-item p {
+            margin-top: 0.5em;
+            line-height: 1.5;
+        }
+
+        /* Community Section */
+        .community {
+            padding: 4em 2em;
+            background: #fff;
+            text-align: center;
+        }
+
+        .community h2 {
+            margin-bottom: 1em;
+            font-size: 2.5em;
+        }
+
+        .community p {
+            max-width: 600px;
+            margin: 0 auto 2em auto;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            background: #222;
+            color: #aaa;
+            text-align: center;
+            padding: 1em 0;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            nav li {
+                margin-left: 0;
+                margin-bottom: 1em;
+            }
+
+            .hero-content h1 {
+                font-size: 3em;
+            }
+
+            .hero-content p {
+                font-size: 1.2em;
+            }
+
+            .feature-list {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header class="hero">
+        <nav>
+            <ul>
+                <li><a href="#">Home</a></li>
+                <li><a href="#">Features</a></li>
+                <li><a href="#">Community</a></li>
+                <li><a href="#">Support</a></li>
+            </ul>
+        </nav>
+        <div class="hero-content">
+            <h1>Golf Clash</h1>
+            <p>Experience the thrill of golf like never before. Join millions of players worldwide in exciting real-time multiplayer matches!</p>
+            <a href="#" class="btn">Play Now</a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Features Section -->
+        <section class="features">
+            <h2>Game Features</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <img src="https://media.contentapi.ea.com/content/dam/eacom/common/medallion-violet.png" alt="Real-time Multiplayer">
+                    <h3>Real-time Multiplayer</h3>
+                    <p>Compete against players from around the world in exciting matches.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://media.contentapi.ea.com/content/dam/eacom/common/medallion-violet.png" alt="Stunning Courses">
+                    <h3>Stunning Courses</h3>
+                    <p>Play on beautifully rendered courses that challenge your skills.</p>
+                </div>
+                <div class="feature-item">
+                    <img src="https://media.contentapi.ea.com/content/dam/eacom/common/medallion-violet.png" alt="Customizable Equipment">
+                    <h3>Customizable Equipment</h3>
+                    <p>Unlock clubs and balls to improve your game and customize your play style.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community Section -->
+        <section class="community">
+            <h2>Join the Community</h2>
+            <p>Connect with other players, share tips, and stay updated on the latest news and events.</p>
+            <a href="#" class="btn">Learn More</a>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+    </footer>
+
+    <!-- Optional JavaScript -->
+    <script>
+        (function () {
+          var PLATFORM_ID = "ashbys_platform_20200902211516079-488178b85eeeceb",
+              DOMAIN = "ashbys",
+              APP_ID = "47",
+              WIDGET_TYPE ="webchat";
+      
+          window.helpshiftWidgetConfig = {
+            platformId: PLATFORM_ID,
+            domain: DOMAIN,
+            appId: APP_ID,
+            widgetType: WIDGET_TYPE
+          };
+        }) ();
+      
+        !function(t,e,n){if("function"!=typeof window.HelpshiftWidget){var i=function(){i.q.push(arguments)};i.q=[],window.HelpshiftWidget=i;var a,o=t.getElementsByTagName("script")[0];if(!t.getElementById(e)){(a=t.createElement("script")).async=!0,a.id=e,a.src="https://hs-widget.helpshift.com/init.js";var f=function(){window.HelpshiftWidget("init")};window.attachEvent?(a.attachEvent("onload",f),"function"==typeof n&&a.attachEvent("onerror",n)):(a.addEventListener("load",f,!1),"function"==typeof n&&a.addEventListener("error",n)),o.parentNode.insertBefore(a,o)}}else window.HelpshiftWidget("update")}(document,"hs-widget");
+      </script>    
+</body>
+</html>
