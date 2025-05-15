@@ -166,34 +166,43 @@
     </style>
 </head>
 <body>
-<button id="auto-fill-btn" class="floating-btn">Insert3</button>
+<button id="auto-fill-btn" class="floating-btn">Insert4</button>
 
 
 <script>
-    document
-        .getElementById('auto-fill-btn')
-        .addEventListener('click', function() {
-        // 1) Ensure the widget is open
-        if (window.Helpshift) Helpshift('open');
+  document
+    .getElementById('auto-fill-btn')
+    .addEventListener('click', function() {
+      // 1) Ensure the widget is open
+      if (window.Helpshift) Helpshift('open');
 
-        // 2) Find the textarea (we know this works)
-        const selector = 'textarea.hs-chat-footer__text-area[placeholder="Write your message"]';
+      const selector = 'textarea.hs-chat-footer__text-area[placeholder="Write your message"]';
+      let attempts = 0,
+          maxAttempts = 15,
+          intervalMs  = 200;
+
+      const interval = setInterval(() => {
         const chatInput = document.querySelector(selector);
-        if (!chatInput) {
-            return console.error('Chat input not found');
+
+        if (chatInput) {
+          clearInterval(interval);
+
+          // Use native setter so React/etc picks up the change
+          const nativeSetter = Object.getOwnPropertyDescriptor(
+            HTMLTextAreaElement.prototype, 'value'
+          ).set;
+          nativeSetter.call(chatInput, 'Your predefined message here.');
+
+          // Fire the events most widgets listen for
+          chatInput.dispatchEvent(new Event('input',  { bubbles: true }));
+          chatInput.dispatchEvent(new Event('change', { bubbles: true }));
+          chatInput.focus();
         }
-
-        // 3) Use the native property setter so frameworks detect it…
-        const nativeSetter = Object.getOwnPropertyDescriptor(
-            HTMLTextAreaElement.prototype,
-            'value'
-        ).set;
-        nativeSetter.call(chatInput, 'Your predefined message here.');
-
-        // 4) Dispatch the events that most widgets listen for
-        chatInput.dispatchEvent(new Event('input',  { bubbles: true }));
-        chatInput.dispatchEvent(new Event('change', { bubbles: true }));
-        chatInput.focus();
+        else if (++attempts >= maxAttempts) {
+          clearInterval(interval);
+          console.error('Could not locate chat input after', attempts, 'tries.');
+        }
+      }, intervalMs);
     });
 
     // Helpshift widget init (unchanged)
