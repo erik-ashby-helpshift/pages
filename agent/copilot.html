@@ -166,18 +166,37 @@
     </style>
 </head>
 <body>
-<button id="auto-fill-btn" class="floating-btn">Insert</button>
+<button id="auto-fill-btn" class="floating-btn">Insert2</button>
 
 
 <script>
-    document.getElementById('auto-fill-btn').addEventListener('click', function() {
-      const chatInput = document.querySelector(
-        'textarea.hs-chat-footer__text-area[placeholder="Write your message"]'
-      );
-      if (!chatInput) return console.error("Chat input not found");
-      chatInput.value = "Your predefined message here.";
-      chatInput.dispatchEvent(new Event('input', { bubbles: true }));
-      chatInput.focus();
+    document
+    .getElementById('auto-fill-btn')
+    .addEventListener('click', function() {
+      // 1) Make sure the widget is open
+      if (window.Helpshift) Helpshift('open');
+
+      // 2) Try to find the textarea, retrying every 200ms up to ~2s
+      let attempts = 0;
+      const maxAttempts = 10;
+      const selector = 'textarea.hs-chat-footer__text-area[placeholder="Write your message"]';
+
+      function tryFill() {
+        const chatInput = document.querySelector(selector);
+        if (chatInput) {
+          // 3) Inject your message
+          chatInput.value = "Your predefined message here.";
+          chatInput.dispatchEvent(new Event('input', { bubbles: true }));
+          chatInput.focus();
+        } else if (attempts < maxAttempts) {
+          attempts++;
+          setTimeout(tryFill, 200);
+        } else {
+          console.error('Could not locate chat input after multiple tries.');
+        }
+      }
+
+      tryFill();
     });
 
     // Helpshift widget init (unchanged)
