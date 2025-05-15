@@ -169,6 +169,20 @@
 
 
 <script>
+    document.getElementById('auto-fill-btn').addEventListener('click', function() {
+  const chatInput = document.querySelector('textarea.hs-chat-footer__text-area[placeholder="Write your message"]');
+  
+  if (chatInput) {
+    chatInput.value = "Your predefined message here.";
+    
+    // Trigger input event to ensure widget detects changes
+    chatInput.dispatchEvent(new Event('input', { bubbles: true }));
+    chatInput.focus();
+  } else {
+    console.error("Chat input element not found!");
+  }
+});
+
     (function () {
             var PLATFORM_ID = "ashbys_platform_20250513201751647-70117e5aa261567",
             DOMAIN = "ashbys",
