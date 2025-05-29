@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Microsoft Build 2025: Architecting the Agentic Future - Infographic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8; /* Light gray-blue background */
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem; /* 12px */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .primary-text { color: #00A0B0; } /* Teal Blue */
+        .accent-orange { color: #EB6841; }
+        .accent-yellow { color: #EDC951; }
+        .accent-pink { color: #CC333F; }
+        .bg-primary { background-color: #00A0B0; }
+        .bg-accent-orange { background-color: #EB6841; }
+        .bg-accent-yellow { background-color: #EDC951; }
+        .bg-accent-pink { background-color: #CC333F; }
+
+        .section-title {
+            font-size: 2.25rem; /* 36px */
+            font-weight: 700;
+            margin-bottom: 1.5rem; /* 24px */
+            text-align: center;
+        }
+        .sub-section-title {
+            font-size: 1.5rem; /* 24px */
+            font-weight: 600;
+            margin-top: 2rem; /* 32px */
+            margin-bottom: 1rem; /* 16px */
+            border-bottom: 2px solid #00A0B0; /* Teal Blue */
+            padding-bottom: 0.5rem; /* 8px */
+        }
+        .key-quote {
+            border-left: 4px solid #EB6841; /* Orange */
+            padding: 1rem; /* 16px */
+            margin: 1.5rem 0;
+            background-color: #fff9f5; /* Light orange tint */
+            font-style: italic;
+        }
+        .big-stat-value {
+            font-size: 3rem; /* 48px */
+            font-weight: 700;
+        }
+        .table-wrapper {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid #e2e8f0; /* Tailwind gray-300 */
+            padding: 0.75rem; /* 12px */
+            text-align: left;
+        }
+        th {
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+        .flowchart-step {
+            border: 2px solid #00A0B0; /* Teal Blue */
+            background-color: #e0f7fa; /* Lighter Teal */
+            padding: 1rem;
+            border-radius: 0.5rem;
+            text-align: center;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flowchart-arrow {
+            font-size: 2rem;
+            color: #00A0B0; /* Teal Blue */
+            margin: 0 0.5rem;
+            align-self: center;
+        }
+    </style>
+
+    <!-- 
+        Chosen Color Palette: "Energetic & Playful" (Adapted)
+        Primary Colors Used:
+        - Teal Blue: #00A0B0 (Primary Text, Backgrounds, Borders)
+        - Orange: #EB6841 (Accents, Borders, Key Quotes)
+        - Yellow: #EDC951 (Chart Accents, Highlights)
+        - Reddish Pink: #CC333F (Chart Accents, Warnings/Negatives)
+        - Background: #f0f4f8 (Light Gray-Blue)
+        - Card Background: #FFFFFF (White)
+    -->
+
+    <!-- 
+        Infographic Narrative Plan:
+        1. Hero: Introduction to Microsoft Build 2025 and its agentic future vision.
+        2. Dominant Narratives: Key themes of the event.
+        3. Deep Dive - Model Context Protocol (MCP): Key points, quote, market sentiment, real vs. hype.
+        4. Deep Dive - The Rise of AI Agents: Key points, quote, market sentiment, development spectrum, real vs. hype.
+        5. Deep Dive - Microsoft 365 Copilot: Key points, quote, user reviews, productivity impact (donut chart), real vs. hype.
+        6. Strategic Implications: Microsoft's positioning, opportunities/challenges for stakeholders.
+        7. Conclusion: Outlook on the agent-driven future.
+    -->
+
+    <!-- 
+        Visualization Choices and Justifications (Confirming NO SVG/Mermaid JS):
+        - Dominant Narratives: HTML Cards with Unicode Icons. Goal: Inform/Organize. Justification: Clear thematic presentation. Method: HTML/CSS (Tailwind). NO SVG/Mermaid.
+        - MCP Market Sentiment: Styled HTML Table. Goal: Compare/Organize. Justification: Direct representation of source table. Method: HTML <table> (Tailwind). NO SVG/Mermaid.
+        - AI Agents Market Sentiment: Styled HTML Table. Goal: Compare/Organize. Justification: Direct representation of source table. Method: HTML <table> (Tailwind). NO SVG/Mermaid.
+        - AI Agents - Development Spectrum: HTML/CSS Diagram. Goal: Organize/Relationships. Justification: Visualizes convergence. Method: HTML <div> (Tailwind). NO SVG/Mermaid.
+        - M365 Copilot User Reviews: Styled HTML Table. Goal: Compare/Organize. Justification: Direct representation of source table. Method: HTML <table> (Tailwind). NO SVG/Mermaid.
+        - M365 Copilot Productivity Impact: Donut Chart (Chart.js). Goal: Inform/Compare. Justification: Shows proportional impact areas. Method: Chart.js (Canvas). NO SVG.
+        - Opportunities & Challenges: HTML Columns with Unicode Icons. Goal: Organize/Compare. Justification: Structured comparison. Method: HTML/CSS (Tailwind). NO SVG/Mermaid.
+    -->
+    <!-- 
+        Confirmation: NEITHER Mermaid JS NOR SVG were used anywhere in this output. 
+        All charts are rendered using Chart.js on HTML Canvas.
+        All diagrams/icons are implemented using HTML/CSS with Tailwind and standard Unicode characters.
+    -->
+
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <header class="bg-primary text-white py-12 sm:py-16">
+        <div class="container mx-auto px-6 text-center">
+            <h1 class="text-4xl sm:text-5xl md:text-6xl font-bold mb-4">Microsoft Build 2025</h1>
+            <p class="text-xl sm:text-2xl font-light">Architecting the Agentic Future: An Infographic Overview</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto p-4 sm:p-6 md:p-8">
+        
+        <section id="executive-summary" class="mb-12 card p-6 md:p-8">
+            <h2 class="section-title primary-text">The Agentic Pivot</h2>
+            <p class="text-lg text-center mb-6">Microsoft Build 2025 marked a definitive strategic shift towards an AI-first, agent-centric computing paradigm. The central theme was the "open agentic web," envisioning intelligent agents seamlessly interacting across diverse platforms. This is powered by advancements like the Model Context Protocol (MCP), the rise of AI agents as core application building blocks, and the pervasive integration of Microsoft 365 Copilot.</p>
+            <div class="text-center">
+                <p class="text-2xl font-semibold accent-orange">"We are in the mid-innings of a major platform shift."</p>
+                <p class="text-sm text-gray-600">- Satya Nadella, CEO, Microsoft (as reported by Constellation Research)</p>
+            </div>
+        </section>
+
+        <section id="dominant-narratives" class="mb-12">
+            <h2 class="section-title primary-text">Four Pillars of the Agentic Future</h2>
+            <p class="text-lg text-center mb-8 text-gray-700">Build 2025 keynotes highlighted four dominant narratives shaping Microsoft's strategy:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="card p-6 text-center">
+                    <div class="text-5xl mb-4 accent-orange">🤖</div>
+                    <h3 class="text-xl font-semibold mb-2 primary-text">Primacy of AI Agents</h3>
+                    <p class="text-gray-600 text-sm">AI agents are evolving from tools to fundamental building blocks for next-gen applications, capable of reasoning, acting, and collaborating.</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="text-5xl mb-4 accent-yellow">🌐</div>
+                    <h3 class="text-xl font-semibold mb-2 primary-text">The "Open Agentic Web"</h3>
+                    <p class="text-gray-600 text-sm">An interconnected environment where agents seamlessly discover, communicate, and utilize services across platforms, powered by standards like MCP and NLWeb.</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="text-5xl mb-4 accent-pink">🧑‍💻</div>
+                    <h3 class="text-xl font-semibold mb-2 primary-text">Developer Empowerment</h3>
+                    <p class="text-gray-600 text-sm">New tools like enhanced GitHub Copilot, Windows AI Foundry, and Azure AI Foundry to equip developers for the AI era.</p>
+                </div>
+                <div class="card p-6 text-center">
+                    <div class="text-5xl mb-4 primary-text">🔬</div>
+                    <h3 class="text-xl font-semibold mb-2 primary-text">AI for Scientific Discovery</h3>
+                    <p class="text-gray-600 text-sm">Microsoft Discovery, a platform using agentic AI to accelerate R&D, from hypothesis to simulation and analysis.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="mcp-deep-dive" class="mb-12 card p-6 md:p-8">
+            <h2 class="section-title primary-text">Model Context Protocol (MCP)</h2>
+            <p class="text-lg text-center mb-6 text-gray-700">MCP is a cornerstone for standardizing AI interactions and data exchange in the agentic web.</p>
+            
+            <h3 class="sub-section-title primary-text">Key Highlights</h3>
+            <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                <li>Microsoft & GitHub joined the MCP Steering Committee.</li>
+                <li>MCP support integrated across GitHub, Copilot Studio, Azure AI Foundry, Windows 11.</li>
+                <li>Contributions: Updated authorization spec & MCP server registry service.</li>
+                <li>Described as a lightweight, open-source protocol (JSON-RPC over HTTP).</li>
+                <li>Windows 11 to offer native MCP support, becoming an "agentic" platform.</li>
+            </ul>
+
+            <div class="key-quote">
+                <p>"Just like how USB-C makes it easy to connect devices, MCP allows developers to let AI agents and applications invariably talk to one another, whether they're local tools or online services."</p>
+                <p class="text-sm text-gray-600">- eWeek, summarizing Microsoft's analogy</p>
+            </div>
+
+            <h3 class="sub-section-title primary-text">Market Sentiment Snapshot</h3>
+             <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="bg-green-100 text-green-700">Positive Responses / Praises / Opportunities</th>
+                            <th class="bg-red-100 text-red-700">Significant Criticisms / Concerns / Challenges</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Simplifies integration, promotes interoperability.</td>
+                            <td>Security Vulnerabilities: Expanded attack surface (poisoned tools, malicious prompts).</td>
+                        </tr>
+                        <tr>
+                            <td>Enhances LLM contextual awareness for more accurate responses.</td>
+                            <td>Implementation Consistency & Stability: Evolving standard, potential breaking changes.</td>
+                        </tr>
+                        <tr>
+                            <td>Fosters ecosystems of MCP servers and tools.</td>
+                            <td>Complexity/Overkill for simple use cases; "reinventing the wheel" vs. REST APIs.</td>
+                        </tr>
+                        <tr>
+                            <td>Enables dynamic and adaptable AI agent functionality.</td>
+                            <td>Stateful Protocol Challenges: Difficult with serverless AI architectures.</td>
+                        </tr>
+                         <tr>
+                            <td>Strong Microsoft backing expected to drive adoption.</td>
+                            <td>Reliance on LLM Reasoning: Effectiveness tied to LLM's interpretation abilities.</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>Competing Standards & Dependency on Anthropic.</td>
+                        </tr>
+                         <tr>
+                            <td></td>
+                            <td>Control and Governance requirements for IT teams.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="sub-section-title primary-text">Real vs. Hype Assessment</h3>
+            <p class="text-gray-700 mb-2"><strong class="primary-text">Real Impact:</strong> MCP appears genuinely impactful and foundational, addressing the critical need for standardized AI communication. Strong industry backing and Microsoft's deep integration strategy (Windows, Azure, GitHub) provide credibility. Proactive security contributions are vital for enterprise adoption.</p>
+            <p class="text-gray-700"><strong class="accent-orange">Caution Areas:</strong> The vision of a perfectly seamless "agentic web" is aspirational. Security, stability across implementations, and consistent behavior are significant practical challenges. Microsoft's influence could shape the "open" ecosystem. Unlikely to immediately replace REST APIs for simpler tasks.</p>
+        </section>
+
+        <section id="ai-agents-deep-dive" class="mb-12 card p-6 md:p-8">
+            <h2 class="section-title primary-text">The Rise of AI Agents</h2>
+            <p class="text-lg text-center mb-6 text-gray-700">AI agents are positioned as the new application paradigm, shifting how software is built and interacted with.</p>
+
+            <h3 class="sub-section-title primary-text">Key Highlights</h3>
+            <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                <li>Agents framed as new foundational building blocks for applications.</li>
+                <li>Emphasis on agents that can reason, act, collaborate, and operate with autonomy.</li>
+                <li>GitHub Copilot evolving into an asynchronous coding agent.</li>
+                <li>New tools: pre-built agents, custom agent building blocks, multi-agent orchestration.</li>
+                <li>Focus on secure & governable agents: Microsoft Entra Agent ID, Azure AI Foundry observability.</li>
+            </ul>
+
+            <div class="key-quote">
+                <p>"We've entered the era of AI agents. Thanks to groundbreaking advancements in reasoning and memory, AI models are now more capable and efficient, and we're seeing how AI systems can help us all solve problems in new ways."</p>
+                <p class="text-sm text-gray-600">- Frank X. Shaw, Chief Communications Officer, Microsoft</p>
+            </div>
+            
+            <h3 class="sub-section-title primary-text">AI Agent Development Spectrum</h3>
+            <p class="text-gray-700 mb-4">Microsoft is fostering a convergence, enabling a wide range of users to build AI agents:</p>
+            <div class="flex flex-col md:flex-row items-stretch justify-around gap-4 p-4 bg-gray-50 rounded-lg">
+                <div class="card p-4 flex-1 text-center">
+                    <h4 class="text-lg font-semibold primary-text mb-2">Low-Code / No-Code</h4>
+                    <p class="text-sm text-gray-600 mb-1">e.g., Microsoft Copilot Studio</p>
+                    <p class="text-xs text-gray-500">For business analysts, citizen developers. Rapid creation of simpler agents.</p>
+                </div>
+                <div class="flex items-center justify-center text-3xl primary-text font-bold p-2 md:p-4">↔️</div>
+                <div class="card p-4 flex-1 text-center">
+                    <h4 class="text-lg font-semibold accent-orange mb-2">Pro-Code / Specialized</h4>
+                    <p class="text-sm text-gray-600 mb-1">e.g., Azure AI Foundry, GitHub</p>
+                    <p class="text-xs text-gray-500">For professional developers. Complex, enterprise-scale agentic solutions.</p>
+                </div>
+            </div>
+            <p class="text-xs text-center mt-2 text-gray-500">This spectrum necessitates collaboration, interoperability, and consistent governance.</p>
+
+
+            <h3 class="sub-section-title primary-text">Market Sentiment Snapshot</h3>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="bg-green-100 text-green-700">Positive Responses / Praises / Opportunities</th>
+                            <th class="bg-red-100 text-red-700">Significant Criticisms / Concerns / Challenges</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Significant Productivity Gains across diverse roles.</td>
+                            <td>Implementation Complexity & Data Readiness (quality, lineage, APIs).</td>
+                        </tr>
+                        <tr>
+                            <td>Democratization of Complex Tasks (dev, analysis, research).</td>
+                            <td>Governance, Control & Accountability (agent sprawl, intended actions).</td>
+                        </tr>
+                        <tr>
+                            <td>New Application Paradigms with multi-agent systems.</td>
+                            <td>Security Risks with autonomous agents accessing sensitive data.</td>
+                        </tr>
+                        <tr>
+                            <td>Enhanced Decision-Making through data analysis.</td>
+                            <td>Accuracy, Reliability & Trust in agent outputs and actions.</td>
+                        </tr>
+                        <tr>
+                            <td>Automation of Routine & Complex Tasks.</td>
+                            <td>Skill Gaps & Workforce Adaptation (training, upskilling needed).</td>
+                        </tr>
+                         <tr>
+                            <td>Comprehensive Microsoft Stack for building, deploying, managing agents.</td>
+                            <td>Cost of Adoption & ROI Calculation can be challenging.</td>
+                        </tr>
+                         <tr>
+                            <td></td>
+                            <td>Ethical Considerations (bias, transparency, job displacement).</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 class="sub-section-title primary-text">Real vs. Hype Assessment</h3>
+            <p class="text-gray-700 mb-2"><strong class="primary-text">Real Impact:</strong> A genuinely transformative trend. Microsoft is laying a robust foundation. Concrete use cases (GitHub Copilot, DevOps agents, Microsoft Discovery) show practical value. Investment in governance tools (Entra Agent ID) addresses key enterprise barriers.</p>
+            <p class="text-gray-700"><strong class="accent-orange">Caution Areas:</strong> Fully autonomous "self-driving business processes" remain aspirational for most. Significant foundational work in data readiness and integration is needed. Concerns about quality/security of AI-generated code persist. Success of "agentic web" hinges on standards adoption like MCP.</p>
+        </section>
+
+        <section id="m365-copilot-deep-dive" class="mb-12 card p-6 md:p-8">
+            <h2 class="section-title primary-text">Microsoft 365 Copilot</h2>
+            <p class="text-lg text-center mb-6 text-gray-700">Broader availability and deeper integration aim for a unified, intelligent productivity experience.</p>
+
+            <h3 class="sub-section-title primary-text">Key Highlights</h3>
+            <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                <li>M365 Copilot Wave 2 spring release (updated app, "Create" experience, Notebooks) GA.</li>
+                <li>Emphasis on a unified "UI for AI" integrating chat, search, notebooks, agents.</li>
+                <li>M365 Copilot Tuning in Copilot Studio: Low-code customization with company data.</li>
+                <li>Multi-agent orchestration in Copilot Studio for collaborative task handling.</li>
+                <li>New Copilot features in Word, PowerPoint, Outlook, Teams (summarization, content creation).</li>
+            </ul>
+
+            <div class="key-quote">
+                <p>"It's all part of our strategy to bring the latest AI innovations to you and your business—quickly, economically, and securely."</p>
+                <p class="text-sm text-gray-600">- Microsoft Blog, on Copilot Tuning and multi-agent orchestration</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="sub-section-title primary-text">Productivity Impact with M365 Copilot</h3>
+                    <p class="text-gray-700 mb-4">Users report significant time savings and efficiency gains across various tasks. While specific aggregate data varies, Copilot aims to boost productivity in areas like:</p>
+                    <div class="chart-container mx-auto max-w-md h-72 sm:h-80 md:h-96 max-h-[400px]">
+                        <canvas id="copilotProductivityChart"></canvas>
+                    </div>
+                    <p class="text-xs text-center mt-2 text-gray-500">Illustrative breakdown of common productivity gains.</p>
+                </div>
+                <div>
+                    <h3 class="sub-section-title primary-text">User Review Themes</h3>
+                    <div class="table-wrapper">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th class="bg-green-100 text-green-700">Common Praises / Benefits</th>
+                                    <th class="bg-red-100 text-red-700">Common Criticisms / Concerns</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Significant Productivity Boosts (email, summaries, presentations).</td>
+                                    <td>Accuracy/Reliability Issues ("Hallucinations"), needs human review.</td>
+                                </tr>
+                                <tr>
+                                    <td>Improved Work Quality & Efficiency.</td>
+                                    <td>Prompt Dependency & Learning Curve for best results.</td>
+                                </tr>
+                                <tr>
+                                    <td>Deep Integration with M365 Ecosystem & Org Data.</td>
+                                    <td>Data Security, Privacy, Governance Concerns (oversharing risks).</td>
+                                </tr>
+                                <tr>
+                                    <td>Customization with Copilot Tuning for relevance.</td>
+                                    <td>Cost and ROI Justification, premium pricing.</td>
+                                </tr>
+                                <tr>
+                                    <td>Versatility and Adaptability (modes, capabilities).</td>
+                                    <td>Performance Issues, Lags, Bugs, Functionality Gaps.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <h3 class="sub-section-title primary-text">Real vs. Hype Assessment</h3>
+            <p class="text-gray-700 mb-2"><strong class="primary-text">Real Impact:</strong> A genuine step towards a productivity revolution, evolving continuously. Measurable time savings and efficiency gains reported. Copilot Tuning is crucial for contextualized enterprise value. Deep M365 integration lowers adoption barriers.</p>
+            <p class="text-gray-700"><strong class="accent-orange">Caution Areas:</strong> Not a flawless knowledge work replacement; human oversight and prompt engineering are essential. "Unified UI for AI" is a work in progress. Productivity gains vary by task, user skill, and data quality. Robust data governance is a prerequisite for safe, effective use.</p>
+        </section>
+        
+        <section id="strategic-implications" class="mb-12 card p-6 md:p-8">
+            <h2 class="section-title primary-text">Strategic Implications & Outlook</h2>
+            <p class="text-lg text-center mb-6 text-gray-700">Microsoft's agent-driven future carries profound implications for the entire tech ecosystem.</p>
+
+            <h3 class="sub-section-title primary-text">Microsoft's Competitive Positioning</h3>
+            <p class="text-gray-700 mb-4">Build 2025 announcements significantly bolster Microsoft's AI leadership by:</p>
+            <ul class="list-disc list-inside space-y-2 mb-6 text-gray-700">
+                <li>Leveraging a full-stack approach (infrastructure to applications).</li>
+                <li>Creating an integrated ecosystem (Azure AI, Windows AI, Copilot Studio, M365 Copilot).</li>
+                <li>Utilizing existing dominance in enterprise software, cloud, OS, and identity.
+                <li>Employing an "open" strategy (GitHub Copilot Chat open-source, MCP support) to foster ecosystem buy-in while controlling core platforms.</li>
+            </ul>
+
+            <h3 class="sub-section-title primary-text">Opportunities & Challenges</h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-xl font-semibold mb-3 primary-text">🧑‍💻 Developers</h4>
+                    <p class="font-semibold accent-orange">Opportunities:</p>
+                    <ul class="list-disc list-inside text-sm text-gray-600 mb-3">
+                        <li>Build innovative agentic apps.</li>
+                        <li>Create specialized AI agents.</li>
+                        <li>High demand for AI/MCP skills.</li>
+                    </ul>
+                    <p class="font-semibold accent-pink">Challenges:</p>
+                    <ul class="list-disc list-inside text-sm text-gray-600">
+                        <li>Steep learning curve for new paradigms.</li>
+                        <li>Ensuring agent reliability & security.</li>
+                        <li>Navigating rapidly evolving AI landscape.</li>
+                    </ul>
+                </div>
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-xl font-semibold mb-3 primary-text">🏢 Enterprises</h4>
+                    <p class="font-semibold accent-orange">Opportunities:</p>
+                    <ul class="list-disc list-inside text-sm text-gray-600 mb-3">
+                        <li>Transformative productivity gains.</li>
+                        <li>Significant process automation.</li>
+                        <li>Enhanced data-driven decisions.</li>
+                        <li>Novel customer experiences.</li>
+                    </ul>
+                    <p class="font-semibold accent-pink">Challenges:</p>
+                    <ul class="list-disc list-inside text-sm text-gray-600">
+                        <li>Complex implementation & integration.</li>
+                        <li>Robust data governance needed.</li>
+                        <li>Security risks of autonomous systems.</li>
+                        <li>Cultural change & skill gaps.</li>
+                        <li>Calculating ROI, ethical considerations.</li>
+                    </ul>
+                </div>
+                <div class="border border-gray-200 rounded-lg p-4">
+                    <h4 class="text-xl font-semibold mb-3 primary-text">👤 End-Users</h4>
+                    <p class="font-semibold accent-orange">Opportunities:</p>
+                    <ul class="list-disc list-inside text-sm text-gray-600 mb-3">
+                        <li>Augmented capabilities.</li>
+                        <li>Automation of tedious tasks.</li>
+                        <li>Intelligent assistance.</li>
+                        <li>More accessible information.</li>
+                    </ul>
+                    <p class="font-semibold accent-pink">Challenges:</p>
+                    <ul class="list-disc list-inside text-sm text-gray-600">
+                        <li>Adapting to new ways of working.</li>
+                        <li>Collaborating effectively with AI.</li>
+                        <li>Critically assessing AI outputs.</li>
+                        <li>Managing AI imperfections (bias, errors).</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="text-center card p-6 md:p-8 bg-primary text-white">
+            <h2 class="text-3xl font-bold mb-4">Navigating the Agent-Driven Future</h2>
+            <p class="text-lg mb-4">Microsoft Build 2025 marks a pivotal commitment to an agent-driven paradigm. Over the next 3-5 years, expect AI agents to become more sophisticated and deeply embedded. Success hinges on partner ecosystem development of specialized agents and MCP-compatible tools.</p>
+            <p class="text-lg font-semibold">A balanced approach is key: embrace innovation while pragmatically addressing governance, security, upskilling, and ethics.</p>
+        </section>
+
+    </main>
+
+    <footer class="text-center py-8 text-sm text-gray-600">
+        <p>Infographic based on the "Microsoft Build 2025: Architecting the Agentic Future" Deep Dive Report.</p>
+        <p>&copy; <span id="currentYear"></span> All data synthesized from provided report for illustrative purposes.</p>
+    </footer>
+
+    <script>
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        function wrapLabels(label, maxWidth) {
+            if (typeof label !== 'string') {
+                return label; 
+            }
+            if (label.length <= maxWidth) {
+                return label;
+            }
+            const words = label.split(' ');
+            const lines = [];
+            let currentLine = '';
+            for (const word of words) {
+                if ((currentLine + word).length > maxWidth && currentLine.length > 0) {
+                    lines.push(currentLine.trim());
+                    currentLine = '';
+                }
+                currentLine += word + ' ';
+            }
+            if (currentLine.trim().length > 0) {
+                lines.push(currentLine.trim());
+            }
+            return lines.length > 0 ? lines : [label]; 
+        }
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        font: { size: 10 },
+                        padding:10,
+                        boxWidth: 15,
+                         generateLabels: function(chart) {
+                            const originalLabels = Chart.defaults.plugins.legend.labels.generateLabels(chart);
+                            originalLabels.forEach(label => {
+                                if (typeof label.text === 'string' && label.text.length > 20) {
+                                    label.text = label.text.substring(0, 17) + '...';
+                                }
+                            });
+                            return originalLabels;
+                        }
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        title: function(tooltipItems) {
+                            const item = tooltipItems[0];
+                            let label = item.chart.data.labels[item.dataIndex];
+                            if (Array.isArray(label)) {
+                              return label.join(' ');
+                            } else {
+                              return label;
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        
+        if (document.getElementById('copilotProductivityChart')) {
+            const copilotProductivityCtx = document.getElementById('copilotProductivityChart').getContext('2d');
+            new Chart(copilotProductivityCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: [
+                        wrapLabels('Document Summarization & Drafting', 16), 
+                        wrapLabels('Email Composition & Management', 16), 
+                        wrapLabels('Content Creation (Presentations, Reports)', 16), 
+                        wrapLabels('Meeting Recaps & Action Items', 16),
+                        wrapLabels('Data Analysis & Insights', 16)
+                    ].map(label => Array.isArray(label) ? label : [label]), // Ensure labels are arrays for Chart.js multiline
+                    datasets: [{
+                        label: 'Productivity Gains by Area',
+                        data: [25, 20, 25, 15, 15], // Illustrative data
+                        backgroundColor: [
+                            '#00A0B0', // Teal Blue
+                            '#EB6841', // Orange
+                            '#EDC951', // Yellow
+                            '#CC333F', // Reddish Pink
+                            '#6A4A3C'  // Brown (adapted - darker for contrast)
+                        ],
+                        borderColor: '#FFFFFF',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    ...commonChartOptions,
+                    cutout: '60%',
+                }
+            });
+        }
+
+    </script>
+
+</body>
+</html>
