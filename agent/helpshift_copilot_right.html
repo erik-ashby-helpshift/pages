@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Embedded Helpshift Issues</title>
+  <style>
+    html, body, iframe {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      border: none;
+      overflow: hidden;
+    }
+    iframe {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+  <iframe src="https://ashbys.helpshift.com/admin/issues/" frameborder="0"></iframe>
+
+  <script>
+    (function () {
+      var PLATFORM_ID = "ashbys_platform_20250513201751647-70117e5aa261567",
+          DOMAIN = "ashbys",
+          LANGUAGE = "en";
+
+      window.helpshiftConfig = {
+        platformId: PLATFORM_ID,
+        domain: DOMAIN,
+        language: LANGUAGE
+      };
+
+      helpshiftConfig.widgetOptions = {
+        // ...
+        position: "bottom-right",
+      };
+    })();
+
+!function(t,e){
+    if ("function" != typeof window.Helpshift) {
+      var n = function(){ n.q.push(arguments) }; n.q = [], window.Helpshift = n;
+      var a = t.getElementsByTagName("script")[0],
+          i = t.createElement("script");
+      i.async = !0; i.id = e;
+      i.src = "https://webchat.helpshift.com/latest/webChat.js";
+
+      var onLoad = function() {
+        // 1. Initialize Helpshift
+        window.Helpshift("init");
+
+        // 2. Set custom issue fields
+        window.Helpshift("setCustomIssueFields", {
+          ai_agent: {
+            type: "singleline",
+            value: "copilot_agent"
+          }
+        });
+
+        // 3. Open chat
+        window.Helpshift("open");
+      };
+
+      window.attachEvent ? i.attachEvent("onload", onLoad)
+                         : i.addEventListener("load", onLoad, false);
+      a.parentNode.insertBefore(i, a);
+    } else {
+      window.Helpshift("update");
+    }
+  }(document, "hs-chat");
+
+</script>
+
+</body>
+</html>
