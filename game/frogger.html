@@ -103,6 +103,20 @@
         const ROWS = 15;
         const COLS = 15;
         
+        // 3D perspective constants
+        const PERSPECTIVE_ANGLE = Math.PI / 4; // 45 degrees
+        const DEPTH_SCALE = 0.5; // How much to compress depth
+        
+        // Transform 2D grid coordinates to 3D isometric view
+        function to3D(x, y) {
+            const isoX = (x - y) * Math.cos(PERSPECTIVE_ANGLE) * TILE_SIZE;
+            const isoY = (x + y) * Math.sin(PERSPECTIVE_ANGLE) * TILE_SIZE * DEPTH_SCALE;
+            return {
+                x: isoX + canvas.width / 2,
+                y: isoY + 100
+            };
+        }
+        
         // Game state
         let gameState = 'playing';
         let score = 0;
@@ -343,29 +357,49 @@
             ctx.fillStyle = '#000';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Draw background zones
+            // Draw background zones as diamonds/tiles
             for (let y = 0; y < ROWS; y++) {
-                let color;
-                if (SAFE_ZONES.includes(y)) {
-                    color = '#2d5016'; // Green safe zone
-                } else if (ROAD_ZONES.includes(y)) {
-                    color = '#333'; // Gray road
-                } else {
-                    color = '#1e3a5f'; // Blue water
+                for (let x = 0; x < COLS; x++) {
+                    let color;
+                    if (SAFE_ZONES.includes(y)) {
+                        color = '#2d5016'; // Green safe zone
+                    } else if (ROAD_ZONES.includes(y)) {
+                        color = '#333'; // Gray road
+                    } else {
+                        color = '#1e3a5f'; // Blue water
+                    }
+                    
+                    const pos = to3D(x, y);
+                    const tileWidth = TILE_SIZE * Math.cos(PERSPECTIVE_ANGLE);
+                    const tileHeight = TILE_SIZE * Math.sin(PERSPECTIVE_ANGLE) * DEPTH_SCALE;
+                    
+                    ctx.fillStyle = color;
+                    ctx.beginPath();
+                    ctx.moveTo(pos.x, pos.y - tileHeight);
+                    ctx.lineTo(pos.x + tileWidth, pos.y);
+                    ctx.lineTo(pos.x, pos.y + tileHeight);
+                    ctx.lineTo(pos.x - tileWidth, pos.y);
+                    ctx.closePath();
+                    ctx.fill();
+                    
+                    // Add subtle border
+                    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
                 }
-                
-                ctx.fillStyle = color;
-                ctx.fillRect(0, y * TILE_SIZE, canvas.width, TILE_SIZE);
             }
             
             // Draw lily pads
             lilyPads.forEach(pad => {
+                const pos = to3D(pad.x, pad.y);
                 ctx.fillStyle = pad.occupied ? '#4CAF50' : '#8BC34A';
                 ctx.beginPath();
-                ctx.arc(
-                    pad.x * TILE_SIZE + TILE_SIZE/2,
-                    pad.y * TILE_SIZE + TILE_SIZE/2,
+                ctx.ellipse(
+                    pos.x,
+                    pos.y,
                     15,
+                    7,
+                    0,
                     0,
                     Math.PI * 2
                 );
@@ -374,33 +408,92 @@
             
             // Draw cars
             cars.forEach(car => {
+                const pos = to3D(car.x, car.y);
+                const carWidth = 20;
+                const carHeight = 10;
+                
                 ctx.fillStyle = '#ff4444';
-                ctx.fillRect(
-                    car.x * TILE_SIZE + 5,
-                    car.y * TILE_SIZE + 10,
-                    TILE_SIZE - 10,
-                    TILE_SIZE - 20
-                );
+                ctx.beginPath();
+                ctx.moveTo(pos.x - carWidth/2, pos.y - carHeight/2);
+                ctx.lineTo(pos.x + carWidth/2, pos.y - carHeight/2);
+                ctx.lineTo(pos.x + carWidth/2, pos.y + carHeight/2);
+                ctx.lineTo(pos.x - carWidth/2, pos.y + carHeight/2);
+                ctx.closePath();
+                ctx.fill();
+                
+                // Add car top for 3D effect
+                ctx.fillStyle = '#ff6666';
+                ctx.beginPath();
+                ctx.moveTo(pos.x - carWidth/2, pos.y - carHeight/2);
+                ctx.lineTo(pos.x - carWidth/2 + 5, pos.y - carHeight/2 - 5);
+                ctx.lineTo(pos.x + carWidth/2 + 5, pos.y - carHeight/2 - 5);
+                ctx.lineTo(pos.x + carWidth/2, pos.y - carHeight/2);
+                ctx.closePath();
+                ctx.fill();
             });
             
             // Draw logs
             logs.forEach(log => {
-                ctx.fillStyle = '#8B4513';
-                ctx.fillRect(
-                    log.x * TILE_SIZE,
-                    log.y * TILE_SIZE + 15,
-                    log.width * TILE_SIZE,
-                    10
-                );
+                for (let i = 0; i < log.width; i++) {
+                    const pos = to3D(log.x + i, log.y);
+                    const logWidth = 25;
+                    const logHeight = 8;
+                    
+                    ctx.fillStyle = '#8B4513';
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        pos.x,
+                        pos.y,
+                        logWidth/2,
+                        logHeight/2,
+                        0,
+                        0,
+                        Math.PI * 2
+                    );
+                    ctx.fill();
+                    
+                    // Add log top for 3D effect
+                    ctx.fillStyle = '#A0522D';
+                    ctx.beginPath();
+                    ctx.ellipse(
+                        pos.x,
+                        pos.y - 3,
+                        logWidth/2,
+                        logHeight/2,
+                        0,
+                        0,
+                        Math.PI * 2
+                    );
+                    ctx.fill();
+                }
             });
             
             // Draw player (frog)
+            const playerPos = to3D(player.x, player.y);
+            
+            // Frog body
             ctx.fillStyle = '#4CAF50';
             ctx.beginPath();
-            ctx.arc(
-                player.x * TILE_SIZE + TILE_SIZE/2,
-                player.y * TILE_SIZE + TILE_SIZE/2,
+            ctx.ellipse(
+                playerPos.x,
+                playerPos.y,
                 player.size/2,
+                player.size/3,
+                0,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+            
+            // Frog top for 3D effect
+            ctx.fillStyle = '#66BB6A';
+            ctx.beginPath();
+            ctx.ellipse(
+                playerPos.x,
+                playerPos.y - 5,
+                player.size/2,
+                player.size/3,
+                0,
                 0,
                 Math.PI * 2
             );
@@ -410,8 +503,8 @@
             ctx.fillStyle = '#000';
             ctx.beginPath();
             ctx.arc(
-                player.x * TILE_SIZE + TILE_SIZE/2 - 5,
-                player.y * TILE_SIZE + TILE_SIZE/2 - 5,
+                playerPos.x - 5,
+                playerPos.y - 8,
                 3,
                 0,
                 Math.PI * 2
@@ -420,8 +513,8 @@
             
             ctx.beginPath();
             ctx.arc(
-                player.x * TILE_SIZE + TILE_SIZE/2 + 5,
-                player.y * TILE_SIZE + TILE_SIZE/2 - 5,
+                playerPos.x + 5,
+                playerPos.y - 8,
                 3,
                 0,
                 Math.PI * 2
