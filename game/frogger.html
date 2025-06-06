@@ -310,27 +310,33 @@
         
         function updateLogs() {
             let onLog = false;
+            let playerLog = null;
             
             logs.forEach((log, index) => {
                 log.x += log.direction * log.speed;
-                
-                // Remove logs that are off screen
-                if (log.x < -4 || log.x > COLS + 3) {
-                    logs.splice(index, 1);
-                }
                 
                 // Check if player is on this log
                 if (player.y === log.y && 
                     player.x >= log.x && 
                     player.x < log.x + log.width) {
                     onLog = true;
+                    playerLog = log;
                     // Move player with log
                     player.x += log.direction * log.speed;
                     
-                    // Check if player moved off screen
-                    if (player.x < 0 || player.x >= COLS) {
-                        loseLife();
+                    // Check if player moved off screen - wrap around with log
+                    if (player.x < 0) {
+                        player.x = COLS - 1;
+                        log.x = COLS - log.width;
+                    } else if (player.x >= COLS) {
+                        player.x = 0;
+                        log.x = -log.width + 1;
                     }
+                }
+                
+                // Remove logs that are off screen (but not if player is on them)
+                if ((log.x < -4 || log.x > COLS + 3) && log !== playerLog) {
+                    logs.splice(index, 1);
                 }
             });
             
