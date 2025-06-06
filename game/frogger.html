@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frogger Game</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a1a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-family: Arial, sans-serif;
+            color: white;
+        }
+        
+        #gameContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #gameCanvas {
+            border: 2px solid #333;
+            background-color: #000;
+        }
+        
+        #ui {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            margin-bottom: 10px;
+        }
+        
+        #score, #lives {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        #instructions {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #aaa;
+        }
+        
+        #gameOverScreen {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0, 0, 0, 0.9);
+            padding: 30px;
+            border: 2px solid #555;
+            text-align: center;
+            display: none;
+            border-radius: 10px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4a4a4a;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-top: 15px;
+            border-radius: 5px;
+        }
+        
+        button:hover {
+            background-color: #6a6a6a;
+        }
+    </style>
+</head>
+<body>
+    <div id="gameContainer">
+        <div id="ui">
+            <div id="score">Score: 0</div>
+            <div id="lives">Lives: 3</div>
+        </div>
+        <canvas id="gameCanvas" width="600" height="600"></canvas>
+        <div id="instructions">
+            Use arrow keys to move the frog across the road and river.<br>
+            Avoid cars and use logs to cross the water. Reach the lily pads to score!
+        </div>
+    </div>
+    
+    <div id="gameOverScreen">
+        <h2 id="gameOverTitle">Game Over!</h2>
+        <p id="gameOverMessage">Better luck next time!</p>
+        <button onclick="restartGame()">Play Again</button>
+    </div>
+
+    <script>
+        // Game constants
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const TILE_SIZE = 40;
+        const ROWS = 15;
+        const COLS = 15;
+        
+        // Game state
+        let gameState = 'playing';
+        let score = 0;
+        let lives = 3;
+        let level = 1;
+        
+        // Player (frog)
+        let player = {
+            x: 7,
+            y: 14,
+            size: 30
+        };
+        
+        // Cars
+        let cars = [];
+        let carTimer = 0;
+        
+        // Logs
+        let logs = [];
+        let logTimer = 0;
+        
+        // Lily pads (goal areas)
+        let lilyPads = [
+            {x: 1, y: 0, occupied: false},
+            {x: 4, y: 0, occupied: false},
+            {x: 7, y: 0, occupied: false},
+            {x: 10, y: 0, occupied: false},
+            {x: 13, y: 0, occupied: false}
+        ];
+        
+        // Game areas
+        const SAFE_ZONES = [0, 7, 14]; // Top, middle, bottom
+        const ROAD_ZONES = [9, 10, 11, 12, 13]; // Car lanes
+        const WATER_ZONES = [1, 2, 3, 4, 5, 6]; // Log lanes
+        
+        // Input handling
+        let keys = {};
+        document.addEventListener('keydown', (e) => {
+            if (!keys[e.key]) {
+                keys[e.key] = true;
+                handleInput(e.key);
+            }
+        });
+        
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+        
+        function handleInput(key) {
+            if (gameState !== 'playing') return;
+            
+            let newX = player.x;
+            let newY = player.y;
+            
+            switch(key) {
+                case 'ArrowUp':
+                    if (newY > 0) newY--;
+                    break;
+                case 'ArrowDown':
+                    if (newY < ROWS - 1) newY++;
+                    break;
+                case 'ArrowLeft':
+                    if (newX > 0) newX--;
+                    break;
+                case 'ArrowRight':
+                    if (newX < COLS - 1) newX++;
+                    break;
+                default:
+                    return;
+            }
+            
+            player.x = newX;
+            player.y = newY;
+            
+            // Check if reached goal
+            if (player.y === 0) {
+                checkGoal();
+            }
+            
+            // Award points for moving forward
+            if (key === 'ArrowUp') {
+                score += 10;
+                updateScore();
+            }
+        }
+        
+        function checkGoal() {
+            let reachedPad = false;
+            lilyPads.forEach(pad => {
+                if (pad.x === player.x && !pad.occupied) {
+                    pad.occupied = true;
+                    score += 500;
+                    reachedPad = true;
+                }
+            });
+            
+            if (reachedPad) {
+                resetPlayerPosition();
+                updateScore();
+                
+                // Check if all lily pads are occupied
+                if (lilyPads.every(pad => pad.occupied)) {
+                    nextLevel();
+                }
+            } else {
+                // Hit water at top without lily pad
+                loseLife();
+            }
+        }
+        
+        function nextLevel() {
+            level++;
+            lilyPads.forEach(pad => pad.occupied = false);
+            cars = [];
+            logs = [];
+            resetPlayerPosition();
+            score += 1000;
+            updateScore();
+        }
+        
+        function resetPlayerPosition() {
+            player.x = 7;
+            player.y = 14;
+        }
+        
+        function loseLife() {
+            lives--;
+            updateLives();
+            resetPlayerPosition();
+            
+            if (lives <= 0) {
+                gameState = 'gameOver';
+                showGameOverScreen();
+            }
+        }
+        
+        function spawnCars() {
+            carTimer++;
+            if (carTimer >= 60 - (level * 5)) { // Cars spawn faster each level
+                carTimer = 0;
+                
+                // Spawn car on random road lane
+                const lane = ROAD_ZONES[Math.floor(Math.random() * ROAD_ZONES.length)];
+                const direction = Math.random() > 0.5 ? 1 : -1;
+                const startX = direction === 1 ? -1 : COLS;
+                
+                cars.push({
+                    x: startX,
+                    y: lane,
+                    direction: direction,
+                    speed: 0.1 + (level * 0.02)
+                });
+            }
+        }
+        
+        function spawnLogs() {
+            logTimer++;
+            if (logTimer >= 120 - (level * 10)) { // Logs spawn less frequently
+                logTimer = 0;
+                
+                // Spawn log on random water lane
+                const lane = WATER_ZONES[Math.floor(Math.random() * WATER_ZONES.length)];
+                const direction = Math.random() > 0.5 ? 1 : -1;
+                const startX = direction === 1 ? -2 : COLS + 1;
+                
+                logs.push({
+                    x: startX,
+                    y: lane,
+                    direction: direction,
+                    speed: 0.05 + (level * 0.01),
+                    width: 3
+                });
+            }
+        }
+        
+        function updateCars() {
+            cars.forEach((car, index) => {
+                car.x += car.direction * car.speed;
+                
+                // Remove cars that are off screen
+                if (car.x < -2 || car.x > COLS + 1) {
+                    cars.splice(index, 1);
+                }
+                
+                // Check collision with player
+                if (Math.abs(car.x - player.x) < 0.8 && car.y === player.y) {
+                    loseLife();
+                }
+            });
+        }
+        
+        function updateLogs() {
+            let onLog = false;
+            
+            logs.forEach((log, index) => {
+                log.x += log.direction * log.speed;
+                
+                // Remove logs that are off screen
+                if (log.x < -4 || log.x > COLS + 3) {
+                    logs.splice(index, 1);
+                }
+                
+                // Check if player is on this log
+                if (player.y === log.y && 
+                    player.x >= log.x && 
+                    player.x < log.x + log.width) {
+                    onLog = true;
+                    // Move player with log
+                    player.x += log.direction * log.speed;
+                    
+                    // Check if player moved off screen
+                    if (player.x < 0 || player.x >= COLS) {
+                        loseLife();
+                    }
+                }
+            });
+            
+            // If player is in water and not on a log, lose life
+            if (WATER_ZONES.includes(player.y) && !onLog) {
+                loseLife();
+            }
+        }
+        
+        function gameLoop() {
+            if (gameState === 'playing') {
+                spawnCars();
+                spawnLogs();
+                updateCars();
+                updateLogs();
+            }
+            
+            render();
+            requestAnimationFrame(gameLoop);
+        }
+        
+        function render() {
+            // Clear canvas
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Draw background zones
+            for (let y = 0; y < ROWS; y++) {
+                let color;
+                if (SAFE_ZONES.includes(y)) {
+                    color = '#2d5016'; // Green safe zone
+                } else if (ROAD_ZONES.includes(y)) {
+                    color = '#333'; // Gray road
+                } else {
+                    color = '#1e3a5f'; // Blue water
+                }
+                
+                ctx.fillStyle = color;
+                ctx.fillRect(0, y * TILE_SIZE, canvas.width, TILE_SIZE);
+            }
+            
+            // Draw lily pads
+            lilyPads.forEach(pad => {
+                ctx.fillStyle = pad.occupied ? '#4CAF50' : '#8BC34A';
+                ctx.beginPath();
+                ctx.arc(
+                    pad.x * TILE_SIZE + TILE_SIZE/2,
+                    pad.y * TILE_SIZE + TILE_SIZE/2,
+                    15,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.fill();
+            });
+            
+            // Draw cars
+            cars.forEach(car => {
+                ctx.fillStyle = '#ff4444';
+                ctx.fillRect(
+                    car.x * TILE_SIZE + 5,
+                    car.y * TILE_SIZE + 10,
+                    TILE_SIZE - 10,
+                    TILE_SIZE - 20
+                );
+            });
+            
+            // Draw logs
+            logs.forEach(log => {
+                ctx.fillStyle = '#8B4513';
+                ctx.fillRect(
+                    log.x * TILE_SIZE,
+                    log.y * TILE_SIZE + 15,
+                    log.width * TILE_SIZE,
+                    10
+                );
+            });
+            
+            // Draw player (frog)
+            ctx.fillStyle = '#4CAF50';
+            ctx.beginPath();
+            ctx.arc(
+                player.x * TILE_SIZE + TILE_SIZE/2,
+                player.y * TILE_SIZE + TILE_SIZE/2,
+                player.size/2,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+            
+            // Draw frog eyes
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(
+                player.x * TILE_SIZE + TILE_SIZE/2 - 5,
+                player.y * TILE_SIZE + TILE_SIZE/2 - 5,
+                3,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(
+                player.x * TILE_SIZE + TILE_SIZE/2 + 5,
+                player.y * TILE_SIZE + TILE_SIZE/2 - 5,
+                3,
+                0,
+                Math.PI * 2
+            );
+            ctx.fill();
+        }
+        
+        function updateScore() {
+            document.getElementById('score').textContent = `Score: ${score}`;
+        }
+        
+        function updateLives() {
+            document.getElementById('lives').textContent = `Lives: ${lives}`;
+        }
+        
+        function showGameOverScreen() {
+            document.getElementById('gameOverTitle').textContent = 'Game Over!';
+            document.getElementById('gameOverMessage').textContent = `Final Score: ${score}`;
+            document.getElementById('gameOverScreen').style.display = 'block';
+        }
+        
+        function restartGame() {
+            // Reset game state
+            gameState = 'playing';
+            score = 0;
+            lives = 3;
+            level = 1;
+            
+            // Reset player
+            resetPlayerPosition();
+            
+            // Reset game objects
+            cars = [];
+            logs = [];
+            lilyPads.forEach(pad => pad.occupied = false);
+            carTimer = 0;
+            logTimer = 0;
+            
+            // Reset UI
+            updateScore();
+            updateLives();
+            document.getElementById('gameOverScreen').style.display = 'none';
+        }
+        
+        // Initialize game
+        updateScore();
+        updateLives();
+        gameLoop();
+    </script>
+</body>
+</html>
