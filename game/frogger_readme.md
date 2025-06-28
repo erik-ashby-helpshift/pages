@@ -1,4 +1,4 @@
-# Frogger Game
+# Frogger Game v1.0
 
 A classic Frogger-style arcade game built in HTML5 Canvas and JavaScript.
 
