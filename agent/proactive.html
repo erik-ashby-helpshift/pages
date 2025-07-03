@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Your Game Title</title>
+  <style>
+    /* Importing the fonts */
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #000; /* Dark background */
+      color: #fff;           /* White text */
+    }
+
+    /* Floating Button */
+    .floating-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 16px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      font-size: 14px;
+
+      /* ensure it’s above everything */
+      z-index: 2147483647 !important;
+      pointer-events: auto !important;
+    }
+    .floating-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Navigation Bar */
+    .navbar {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 20px;
+      background-color: rgba(0,0,0,0.8);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 100;
+    }
+    .navbar .logo {
+      margin-right: 30px;
+    }
+    .navbar a {
+      color: #fff;
+      text-decoration: none;
+      margin: 0 15px;
+      font-weight: 700;
+    }
+
+    /* Hero Section */
+    .hero {
+      height: 100vh;
+      background-image: url('your-game-image.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.25);
+    }
+    .hero-content {
+      background-image: url('EAStarWars.png');
+      background-size: cover;
+      background-position: center;
+      width: 1000px; height: 600px;
+      padding: 20px;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      box-sizing: border-box;
+    }
+    .hero h1 {
+      font-size: 4em;
+      margin-bottom: 20px;
+    }
+    .hero p {
+      font-size: 1.5em;
+      max-width: 600px;
+      margin: 0 auto 30px;
+    }
+    .hero button {
+      padding: 15px 30px;
+      font-size: 1em;
+      font-weight: 700;
+      background-color: #0070f3;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Content Sections */
+    .section {
+      padding: 100px 20px;
+      text-align: center;
+    }
+    .section h2 {
+      font-size: 2.5em;
+      margin-bottom: 40px;
+    }
+    .section p {
+      font-size: 1.2em;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* Footer */
+    .footer {
+      background-color: #111;
+      padding: 40px 20px;
+      text-align: center;
+      color: #666;
+    }
+    .footer a {
+      color: #666;
+      text-decoration: none;
+      margin: 0 10px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1       { font-size: 2.5em; }
+      .hero p        { font-size: 1em;   }
+      .section h2    { font-size: 2em;   }
+    }
+  </style>
+</head>
+<body>
+  <!-- Your page content (navbar, hero, sections, footer) goes here -->
+
+  <!-- Floating “Insert Message” Button -->
+  <!-- <button id="auto-fill-btn" class="floating-btn">Insert Message</button> -->
+
+  <!-- Script to open the Helpshift widget and inject your message -->
+  <script>
+    window.addEventListener('load', function() {
+      const btn = document.getElementById('auto-fill-btn');
+      btn.addEventListener('click', function() {
+        // 1) Open the Helpshift chat (after it’s initialized)
+        if (window.Helpshift) Helpshift('open');
+
+        // 2) Poll for the textarea
+        const selector = 'textarea.hs-chat-footer__text-area[placeholder="Write your message"]';
+        let tries = 0, maxTries = 15;
+        const interval = setInterval(() => {
+          const ta = document.querySelector(selector);
+          if (ta) {
+            clearInterval(interval);
+            // 3) Use native setter so frameworks detect it
+            const nativeSetter = Object.getOwnPropertyDescriptor(
+              HTMLTextAreaElement.prototype, 'value'
+            ).set;
+            nativeSetter.call(ta, 'Your predefined message here.');
+            // 4) Fire the typical events
+            ta.dispatchEvent(new Event('input',  { bubbles: true }));
+            ta.dispatchEvent(new Event('change', { bubbles: true }));
+            ta.focus();
+          } else if (++tries >= maxTries) {
+            clearInterval(interval);
+            console.error('Textarea never appeared – check that the widget opened');
+          }
+        }, 200);
+      });
+    });
+  </script>
+
+  <!-- Helpshift Chat Widget Snippet (init + open after load) -->
+ <script>
+  (function () {
+    var PLATFORM_ID = "ashbys_platform_20250528035520014-9345b776cb3cecc",
+        DOMAIN      = "ashbys",
+        LANGUAGE    = "en";
+    window.helpshiftConfig = {
+      platformId: PLATFORM_ID,
+      domain: DOMAIN,
+      language: LANGUAGE,
+      widgetOptions: { fullScreen: true }
+    };
+  })();
+
+  !function(t,e){
+    if ("function" != typeof window.Helpshift) {
+      var n = function(){ n.q.push(arguments) }; n.q = [], window.Helpshift = n;
+      var a = t.getElementsByTagName("script")[0],
+          i = t.createElement("script");
+      i.async = !0; i.id = e;
+      i.src = "https://webchat.helpshift.com/latest/webChat.js";
+
+      var onLoad = function() {
+        // 1. Initialize Helpshift
+        window.Helpshift("init");
+
+        // 2. Set custom issue fields
+        window.Helpshift("setCustomIssueFields", {
+          ai_agent: {
+            type: "singleline",
+            value: "proactive_agent"
+          }
+        });
+
+        // 3. Open chat
+        window.Helpshift("open");
+      };
+
+      window.attachEvent ? i.attachEvent("onload", onLoad)
+                         : i.addEventListener("load", onLoad, false);
+      a.parentNode.insertBefore(i, a);
+    } else {
+      window.Helpshift("update");
+    }
+  }(document, "hs-chat");
+</script>
+</body>
+</html>
+
