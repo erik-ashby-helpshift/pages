@@ -23,9 +23,83 @@
   </style>
 </head>
 <body>
-  <div class="chat-container">
-    <h2>Chat Widget</h2>
-    <p>This is your blank canvas for the chat widget.</p>
-  </div>
+ <script>
+    window.addEventListener('load', function() {
+      const btn = document.getElementById('auto-fill-btn');
+      btn.addEventListener('click', function() {
+        // 1) Open the Helpshift chat (after it’s initialized)
+        if (window.Helpshift) Helpshift('open');
+
+        // 2) Poll for the textarea
+        const selector = 'textarea.hs-chat-footer__text-area[placeholder="Write your message"]';
+        let tries = 0, maxTries = 15;
+        const interval = setInterval(() => {
+          const ta = document.querySelector(selector);
+          if (ta) {
+            clearInterval(interval);
+            // 3) Use native setter so frameworks detect it
+            const nativeSetter = Object.getOwnPropertyDescriptor(
+              HTMLTextAreaElement.prototype, 'value'
+            ).set;
+            nativeSetter.call(ta, 'Your predefined message here.');
+            // 4) Fire the typical events
+            ta.dispatchEvent(new Event('input',  { bubbles: true }));
+            ta.dispatchEvent(new Event('change', { bubbles: true }));
+            ta.focus();
+          } else if (++tries >= maxTries) {
+            clearInterval(interval);
+            console.error('Textarea never appeared – check that the widget opened');
+          }
+        }, 200);
+      });
+    });
+  </script>
+
+  <!-- Helpshift Chat Widget Snippet (init + open after load) -->
+ <script>
+  (function () {
+    var PLATFORM_ID = "ashbys_platform_20250528035520014-9345b776cb3cecc",
+        DOMAIN      = "ashbys",
+        LANGUAGE    = "en";
+    window.helpshiftConfig = {
+      platformId: PLATFORM_ID,
+      domain: DOMAIN,
+      language: LANGUAGE,
+      widgetOptions: { fullScreen: true }
+    };
+  })();
+
+  !function(t,e){
+    if ("function" != typeof window.Helpshift) {
+      var n = function(){ n.q.push(arguments) }; n.q = [], window.Helpshift = n;
+      var a = t.getElementsByTagName("script")[0],
+          i = t.createElement("script");
+      i.async = !0; i.id = e;
+      i.src = "https://webchat.helpshift.com/latest/webChat.js";
+
+      var onLoad = function() {
+        // 1. Initialize Helpshift
+        window.Helpshift("init");
+
+        // 2. Set custom issue fields
+        window.Helpshift("setCustomIssueFields", {
+          ai_agent: {
+            type: "singleline",
+            value: "proactive_agent"
+          }
+        });
+
+        // 3. Open chat
+        window.Helpshift("open");
+      };
+
+      window.attachEvent ? i.attachEvent("onload", onLoad)
+                         : i.addEventListener("load", onLoad, false);
+      a.parentNode.insertBefore(i, a);
+    } else {
+      window.Helpshift("update");
+    }
+  }(document, "hs-chat");
+</script>
 </body>
 </html>
