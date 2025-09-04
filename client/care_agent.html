@@ -148,35 +148,34 @@
 <body>
 
   <script>
-    (function () {
-      var PLATFORM_ID = "ashbys_platform_20250513201751647-70117e5aa261567",
-          DOMAIN = "ashbys",
-          LANGUAGE = "en";
+    // Global variables
+    var PLATFORM_ID = "ashbys_platform_20250513201751647-70117e5aa261567",
+        DOMAIN = "ashbys",
+        LANGUAGE = "en";
 
-      function generateAiConversationKey() {
-        const array = new Uint8Array(8);
-        crypto.getRandomValues(array);
-        return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
-      }
+    function generateAiConversationKey() {
+      const array = new Uint8Array(8);
+      crypto.getRandomValues(array);
+      return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+    }
 
-      function validateAiConversationKey(key) {
-        return /^[0-9a-f]{16}$/.test(key);
-      }
+    function validateAiConversationKey(key) {
+      return /^[0-9a-f]{16}$/.test(key);
+    }
 
-      var aiConversationKey = generateAiConversationKey();
-      console.log('Generated AI Conversation Key:', aiConversationKey);
+    var aiConversationKey = generateAiConversationKey();
+    console.log('Generated AI Conversation Key:', aiConversationKey);
 
-      window.helpshiftConfig = {
-        platformId: PLATFORM_ID,
-        domain: DOMAIN,
-        language: LANGUAGE
-      };
+    window.helpshiftConfig = {
+      platformId: PLATFORM_ID,
+      domain: DOMAIN,
+      language: LANGUAGE
+    };
 
-      helpshiftConfig.widgetOptions = {
-        // ...
-        position: "bottom-left",
-      };
-    })();
+    helpshiftConfig.widgetOptions = {
+      // ...
+      position: "bottom-left",
+    };
 
 !function(t,e){
     if ("function" != typeof window.Helpshift) {
