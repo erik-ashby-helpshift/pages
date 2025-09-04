@@ -153,6 +153,19 @@
           DOMAIN = "ashbys",
           LANGUAGE = "en";
 
+      function generateAiConversationKey() {
+        const array = new Uint8Array(8);
+        crypto.getRandomValues(array);
+        return Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+      }
+
+      function validateAiConversationKey(key) {
+        return /^[0-9a-f]{16}$/.test(key);
+      }
+
+      var aiConversationKey = generateAiConversationKey();
+      console.log('Generated AI Conversation Key:', aiConversationKey);
+
       window.helpshiftConfig = {
         platformId: PLATFORM_ID,
         domain: DOMAIN,
@@ -177,15 +190,26 @@
         // 1. Initialize Helpshift
         window.Helpshift("init");
 
-        // 2. Set custom issue fields
+        // 2. Set custom issue fields with AI conversation key
         window.Helpshift("setCustomIssueFields", {
           ai_agent: {
             type: "singleline",
             value: "care_agent"
+          },
+          ai_conversation_key: {
+            type: "singleline",
+            value: aiConversationKey
           }
         });
 
-        // 3. Open chat
+        // 3. Validate the generated key
+        if (!validateAiConversationKey(aiConversationKey)) {
+          console.error('Invalid AI conversation key generated:', aiConversationKey);
+        } else {
+          console.log('AI conversation key validated successfully');
+        }
+
+        // 4. Open chat
         window.Helpshift("open");
       };
 
