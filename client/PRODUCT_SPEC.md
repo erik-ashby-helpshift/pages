@@ -151,6 +151,12 @@ const firebaseConfig = {
 ### Helpshift Apps Configuration
 ```javascript
 const APPS = {
+  quantiphi: {
+    name: "Quantiphi Fleet Command",
+    platformId: "ashbys_platform_20251030223321331-cae75e82f606b6d",
+    domain: "ashbys",
+    appId: "ashbys_platform_20251030223321270-5458d1e7a62f35f"
+  },
   ea: {
     name: "EA Client Demo",
     platformId: "ashbys_platform_20200902211516079-488178b85eeeceb",
@@ -263,9 +269,9 @@ User not authenticated:
 │                                                 │
 │  ┌─── 🎮 Step 2: Select App ──────────────────┐ │
 │  │                                            │ │
-│  │  Choose App: [EA Client Demo        ▼]    │ │
+│  │  Choose App: [Quantiphi Fleet Command ▼]  │ │
 │  │                                            │ │
-│  │  ℹ️  Platform ID: ashbys_platform_2020...  │ │
+│  │  ℹ️  Platform ID: ashbys_platform_2025...  │ │
 │  │  ⚠️  Changing apps requires page reload    │ │
 │  └────────────────────────────────────────────┘ │
 │                                                 │

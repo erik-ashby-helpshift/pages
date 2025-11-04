@@ -350,6 +350,7 @@
         <div class="form-group">
             <label class="form-label">Choose Helpshift App</label>
             <select id="app-selector" class="form-select">
+                <option value="quantiphi">Quantiphi Fleet Command</option>
                 <option value="ea">EA Client Demo</option>
                 <option value="careai">Care-AI Client Demo</option>
                 <option value="sega">Sega Client Demo</option>
@@ -358,12 +359,8 @@
         </div>
 
         <div id="app-info" class="info-box">
-            <strong>Selected:</strong> EA Client Demo<br>
-            <strong>Platform ID:</strong> <span id="platform-id">ashbys_platform_20200902211516079-488178b85eeeceb</span>
-        </div>
-
-        <div class="warning-box">
-            ⚠️ Changing apps requires page reload to reinitialize Helpshift SDK
+            <strong>Selected:</strong> Quantiphi Fleet Command<br>
+            <strong>Platform ID:</strong> <span id="platform-id">ashbys_platform_20251030223321331-cae75e82f606b6d</span>
         </div>
     </div>
 
@@ -440,6 +437,12 @@
         },
         jwtEndpoint: "https://helpshift-jwt-service-845835740344.us-central1.run.app",
         apps: {
+            quantiphi: {
+                name: "Quantiphi Fleet Command",
+                platformId: "ashbys_platform_20251030223321331-cae75e82f606b6d",
+                domain: "ashbys",
+                appId: "ashbys_platform_20251030223321270-5458d1e7a62f35f"  // iOS app ID for JWT
+            },
             ea: {
                 name: "EA Client Demo",
                 platformId: "ashbys_platform_20200902211516079-488178b85eeeceb",
@@ -474,7 +477,7 @@
     // Application State
     const STATE = {
         currentUser: null,
-        selectedApp: 'ea',
+        selectedApp: 'quantiphi',
         helpshiftInitialized: false,
         helpshiftLoaded: false,
         cifs: []
@@ -869,24 +872,15 @@
 
     elements.appSelector.addEventListener('change', (e) => {
         const newApp = e.target.value;
-        if (STATE.helpshiftInitialized && newApp !== STATE.selectedApp) {
-            const confirmed = confirm('Changing apps requires page reload. Your CIFs will be preserved. Continue?');
-            if (!confirmed) {
-                e.target.value = STATE.selectedApp;
-                return;
-            }
-
+        if (newApp !== STATE.selectedApp) {
             // Save state
             sessionStorage.setItem('helpshift_state', JSON.stringify({
                 selectedApp: newApp,
                 cifs: CIFManager.fields
             }));
 
-            // Reload
+            // Reload page to reinitialize with new app
             window.location.reload();
-        } else {
-            STATE.selectedApp = newApp;
-            updateUI();
         }
     });
 
@@ -928,15 +922,16 @@
         const saved = sessionStorage.getItem('helpshift_state');
         if (saved) {
             const state = JSON.parse(saved);
-            STATE.selectedApp = state.selectedApp || 'ea';
+            STATE.selectedApp = state.selectedApp || 'quantiphi';
             CIFManager.fields = state.cifs || [];
             elements.appSelector.value = STATE.selectedApp;
             CIFManager.render();
             sessionStorage.removeItem('helpshift_state');
+        } else {
+            // Load AI Agent preset by default only if no saved state
+            CIFManager.loadPreset('ai-agent');
         }
 
-        // Load AI Agent preset by default
-        CIFManager.loadPreset('ai-agent');
         updateUI();
     });
 
