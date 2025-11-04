@@ -387,7 +387,7 @@
         <button id="btn-add-cif" class="btn-add">+ Add Custom Field</button>
 
         <div class="info-box">
-            💡 You can change CIFs and re-launch the widget without reloading the page
+            💡 CIFs are set during initialization. To change CIFs, please reload the page after editing.
         </div>
     </div>
 
@@ -480,7 +480,8 @@
         selectedApp: 'quantiphi',
         helpshiftInitialized: false,
         helpshiftLoaded: false,
-        cifs: []
+        cifs: [],
+        initialCifs: null
     };
 
     // DOM Elements
@@ -700,17 +701,22 @@
                     elements.jwtToken.value = jwt;
                     elements.jwtDisplay.classList.remove('hidden');
 
-                    // Configure Helpshift with Identity System
+                    // Get CIFs before initialization
+                    const cifs = CIFManager.toHelpshiftFormat();
+                    console.log('Initializing Helpshift with CIFs:', cifs);
+
+                    // Configure Helpshift with Identity System and CIFs
                     window.helpshiftConfig = {
                         platformId: appConfig.platformId,
                         domain: appConfig.domain,
                         language: 'en',
                         authenticateWith: 'identities',
                         userId: STATE.currentUser.email,
-                        userEmail: STATE.currentUser.email
+                        userEmail: STATE.currentUser.email,
+                        customIssueFields: cifs
                     };
 
-                    console.log('Helpshift config set with authenticateWith: identities');
+                    console.log('Helpshift config set with authenticateWith: identities and CIFs');
 
                     // Load Helpshift SDK if not already loaded
                     if (!STATE.helpshiftLoaded) {
@@ -738,21 +744,28 @@
                         await new Promise(resolve => setTimeout(resolve, 1000));
                     }
 
+                    // Store initial CIFs for change detection
+                    STATE.initialCifs = JSON.stringify(cifs);
                     STATE.helpshiftInitialized = true;
-                    showStatus('launch', `✅ Helpshift initialized`, 'success');
+                    showStatus('launch', `✅ Helpshift initialized with ${Object.keys(cifs).length} CIF(s)`, 'success');
+                } else {
+                    // Check if CIFs have changed since initialization
+                    const cifs = CIFManager.toHelpshiftFormat();
+                    const currentCifs = JSON.stringify(cifs);
+
+                    if (currentCifs !== STATE.initialCifs) {
+                        showStatus('launch', '⚠️ CIFs changed! Please reload page for changes to take effect.', 'error');
+                        console.warn('CIFs have changed since initialization. Page reload required for new CIFs.');
+                    }
                 }
 
-                // Launch widget with CIFs
+                // Launch widget
                 const cifs = CIFManager.toHelpshiftFormat();
-                console.log('Launching Helpshift with CIFs:', cifs);
+                console.log('Launching Helpshift widget');
 
-                window.Helpshift('open', {
-                    config: {
-                        customIssueFields: cifs
-                    }
-                });
+                window.Helpshift('open');
 
-                showStatus('launch', `✅ Widget launched with ${Object.keys(cifs).length} CIF(s)`, 'success');
+                showStatus('launch', `✅ Widget launched`, 'success');
                 elements.btnLaunch.disabled = false;
                 elements.btnLaunch.textContent = 'Launch Helpshift Widget';
 
