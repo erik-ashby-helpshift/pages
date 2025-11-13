@@ -623,7 +623,7 @@
             }
         },
 
-        async getHelpshiftJWT(appId, username = 'demo_user', useOldSystem = false) {
+        async getHelpshiftJWT(appId, useOldSystem = false) {
             const user = auth.currentUser;
             if (!user) throw new Error('Not authenticated');
 
@@ -638,7 +638,11 @@
                     'Authorization': `Bearer ${idToken}`,
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ app_id: requestAppId, username })
+                body: JSON.stringify({ 
+                    app_id: requestAppId, 
+                    user_id: user.uid, 
+                    email: user.email 
+                })
             });
 
             if (!response.ok) {
@@ -694,7 +698,7 @@
 
                     // Get JWT first
                     console.log('Getting JWT for app (New ID System):', appConfig.appId);
-                    const jwt = await AuthManager.getHelpshiftJWT(appConfig.appId, 'demo_user', false);
+                    const jwt = await AuthManager.getHelpshiftJWT(appConfig.appId, false);
                     console.log('JWT received:', jwt.substring(0, 50) + '...');
 
                     // Display JWT in UI
