@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +24,7 @@
             margin: 0 auto;
             background: white;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
             overflow: hidden;
         }
 
@@ -297,268 +298,274 @@
         }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <!-- Header -->
-    <div class="header">
-        <h1>🎯 Helpshift Multi-App Configurator</h1>
-        <p>Product Research Testing Tool - Configure & Launch Helpshift Web Chat</p>
-    </div>
-
-    <!-- Step 1: Authentication -->
-    <div class="section">
-        <div class="section-title">
-            <span class="icon">🔐</span>
-            <span>Step 1: Authentication</span>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Helpshift Multi-App Configurator</h1>
+            <p>Product Research Testing Tool - Configure & Launch Helpshift Web Chat</p>
         </div>
 
-        <div id="auth-form">
-            <div class="info-box" style="margin-bottom: 15px;">
-                ℹ️ Default user: <strong>quantitest@quant.com</strong> / Password: <strong>Anything00</strong>
+        <!-- Step 1: Authentication -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">🔐</span>
+                <span>Step 1: Authentication</span>
+            </div>
+
+            <div id="auth-form">
+                <div class="info-box" style="margin-bottom: 15px;">
+                    ℹ️ Default user: <strong>quantitest@quant.com</strong> / Password: <strong>Anything00</strong>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" id="email" class="form-input" placeholder="your.email@example.com"
+                        value="quantitest@quant.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-input" placeholder="Min 6 characters"
+                        value="Anything00">
+                </div>
+
+                <div class="button-group">
+                    <button id="btn-signin" class="btn btn-primary">Sign In</button>
+                    <button id="btn-signup" class="btn btn-secondary">Sign Up</button>
+                    <button id="btn-signout" class="btn btn-danger hidden">Sign Out</button>
+                </div>
+            </div>
+
+            <div id="auth-status" class="status status-inactive">
+                ⚪ Not authenticated
+            </div>
+        </div>
+
+        <!-- Step 2: Select App -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">🎮</span>
+                <span>Step 2: Select App</span>
             </div>
 
             <div class="form-group">
-                <label class="form-label">Email</label>
-                <input type="email" id="email" class="form-input" placeholder="your.email@example.com" value="quantitest@quant.com">
+                <label class="form-label">Choose Helpshift App</label>
+                <select id="app-selector" class="form-select">
+                    <option value="mhn">Monster Hunter Now</option>
+                    <option value="ea">EA Client Demo</option>
+                    <option value="careai">Care-AI Client Demo</option>
+                    <option value="sega">Sega Client Demo</option>
+                    <option value="spacefleet">Space Fleet Command - Demo</option>
+                </select>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <input type="password" id="password" class="form-input" placeholder="Min 6 characters" value="Anything00">
+            <div id="app-info" class="info-box">
+                <strong>Selected:</strong> Monster Hunter Now<br>
+                <strong>Platform ID:</strong> <span
+                    id="platform-id">ashbys_platform_20251030223321331-cae75e82f606b6d</span>
+            </div>
+        </div>
+
+        <!-- Step 3: Custom Issue Fields -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">⚙️</span>
+                <span>Step 3: Custom Issue Fields (CIFs)</span>
+            </div>
+
+            <div class="preset-group">
+                <select id="preset-selector" class="form-select" style="flex: 1;">
+                    <option value="">-- Select Preset --</option>
+                    <option value="ai-agent">AI Agent Template</option>
+                    <option value="custom">Custom (blank)</option>
+                </select>
+                <button id="btn-load-preset" class="btn btn-primary">Load Preset</button>
+            </div>
+
+            <div id="cif-editor" class="cif-editor">
+                <!-- CIF rows will be added here dynamically -->
+            </div>
+
+            <button id="btn-add-cif" class="btn-add">+ Add Custom Field</button>
+
+            <div class="info-box">
+                💡 You can change CIFs and re-launch the widget without reloading the page
+            </div>
+        </div>
+
+        <!-- Step 4: Launch -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">🚀</span>
+                <span>Step 4: Launch Helpshift</span>
             </div>
 
             <div class="button-group">
-                <button id="btn-signin" class="btn btn-primary">Sign In</button>
-                <button id="btn-signup" class="btn btn-secondary">Sign Up</button>
-                <button id="btn-signout" class="btn btn-danger hidden">Sign Out</button>
+                <button id="btn-launch" class="btn btn-success" disabled>Launch Helpshift Widget</button>
+            </div>
+
+            <div class="info-box">
+                💡 Click to initialize and launch Helpshift with your configured CIFs. You can close the widget, change
+                CIFs, and launch again without reloading.
+            </div>
+
+            <div id="launch-status" class="info-box hidden">
+                Status will appear here...
+            </div>
+
+            <div id="jwt-display" class="info-box hidden" style="margin-top: 15px;">
+                <strong>JWT Token:</strong><br>
+                <textarea id="jwt-token" readonly
+                    style="width: 100%; height: 150px; font-family: monospace; font-size: 11px; margin-top: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                <button id="btn-copy-jwt" class="btn-add" style="margin-top: 10px;">Copy JWT</button>
             </div>
         </div>
-
-        <div id="auth-status" class="status status-inactive">
-            ⚪ Not authenticated
-        </div>
     </div>
 
-    <!-- Step 2: Select App -->
-    <div class="section">
-        <div class="section-title">
-            <span class="icon">🎮</span>
-            <span>Step 2: Select App</span>
-        </div>
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-        <div class="form-group">
-            <label class="form-label">Choose Helpshift App</label>
-            <select id="app-selector" class="form-select">
-                <option value="mhn">Monster Hunter Now</option>
-                <option value="ea">EA Client Demo</option>
-                <option value="careai">Care-AI Client Demo</option>
-                <option value="sega">Sega Client Demo</option>
-                <option value="spacefleet">Space Fleet Command - Demo</option>
-            </select>
-        </div>
-
-        <div id="app-info" class="info-box">
-            <strong>Selected:</strong> Monster Hunter Now<br>
-            <strong>Platform ID:</strong> <span id="platform-id">ashbys_platform_20251030223321331-cae75e82f606b6d</span>
-        </div>
-    </div>
-
-    <!-- Step 3: Custom Issue Fields -->
-    <div class="section">
-        <div class="section-title">
-            <span class="icon">⚙️</span>
-            <span>Step 3: Custom Issue Fields (CIFs)</span>
-        </div>
-
-        <div class="preset-group">
-            <select id="preset-selector" class="form-select" style="flex: 1;">
-                <option value="">-- Select Preset --</option>
-                <option value="ai-agent">AI Agent Template</option>
-                <option value="custom">Custom (blank)</option>
-            </select>
-            <button id="btn-load-preset" class="btn btn-primary">Load Preset</button>
-        </div>
-
-        <div id="cif-editor" class="cif-editor">
-            <!-- CIF rows will be added here dynamically -->
-        </div>
-
-        <button id="btn-add-cif" class="btn-add">+ Add Custom Field</button>
-
-        <div class="info-box">
-            💡 You can change CIFs and re-launch the widget without reloading the page
-        </div>
-    </div>
-
-    <!-- Step 4: Launch -->
-    <div class="section">
-        <div class="section-title">
-            <span class="icon">🚀</span>
-            <span>Step 4: Launch Helpshift</span>
-        </div>
-
-        <div class="button-group">
-            <button id="btn-launch" class="btn btn-success" disabled>Launch Helpshift Widget</button>
-        </div>
-
-        <div class="info-box">
-            💡 Click to initialize and launch Helpshift with your configured CIFs. You can close the widget, change CIFs, and launch again without reloading.
-        </div>
-
-        <div id="launch-status" class="info-box hidden">
-            Status will appear here...
-        </div>
-
-        <div id="jwt-display" class="info-box hidden" style="margin-top: 15px;">
-            <strong>JWT Token:</strong><br>
-            <textarea id="jwt-token" readonly style="width: 100%; height: 150px; font-family: monospace; font-size: 11px; margin-top: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-            <button id="btn-copy-jwt" class="btn-add" style="margin-top: 10px;">Copy JWT</button>
-        </div>
-    </div>
-</div>
-
-<!-- Firebase SDK -->
-<script type="module">
-    // Import Firebase modules
-    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
-    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
-
-    // Configuration
-    const CONFIG = {
-        firebase: {
-            apiKey: "AIzaSyBPIm-WOWxpNsgF9NbVjzfbSmTLPlIQkMw",
-            authDomain: "product-research-460317.firebaseapp.com",
-            projectId: "product-research-460317",
-            storageBucket: "product-research-460317.firebasestorage.app",
-            messagingSenderId: "845835740344",
-            appId: "1:845835740344:web:76d90d7c86c938562a404d",
-            measurementId: "G-WJ8ZHQXZD3"
-        },
-        jwtEndpoint: "https://helpshift-jwt-service-845835740344.us-central1.run.app",
-        apps: {
-            mhn: {
-                name: "Monster Hunter Now",
-                platformId: "sandbox-niantic_platform_20251112203107859-cea10d94de5560b",
-                domain: "sandbox-niantic",
-                appId: "sandbox-niantic_platform_20251112203107810-52423de7a082d8f"  // iOS app ID for JWT
+        // Configuration
+        const CONFIG = {
+            firebase: {
+                apiKey: "AIzaSyBPIm-WOWxpNsgF9NbVjzfbSmTLPlIQkMw",
+                authDomain: "product-research-460317.firebaseapp.com",
+                projectId: "product-research-460317",
+                storageBucket: "product-research-460317.firebasestorage.app",
+                messagingSenderId: "845835740344",
+                appId: "1:845835740344:web:76d90d7c86c938562a404d",
+                measurementId: "G-WJ8ZHQXZD3"
             },
-            ea: {
-                name: "EA Client Demo",
-                platformId: "ashbys_platform_20200902211516079-488178b85eeeceb",
-                domain: "ashbys",
-                appId: "ashbys_platform_20200902211516036-cd67ffa9e7ed41c"  // iOS app ID for JWT
-            },
-            careai: {
-                name: "Care-AI Client Demo",
-                platformId: "ashbys_platform_20250905022221454-66e3ededd13a0d1",
-                domain: "ashbys",
-                appId: "ashbys_platform_20250905022221399-f763e68fdc588e3"  // iOS app ID for JWT
-            },
-            sega: {
-                name: "Sega Client Demo",
-                platformId: "ashbys_platform_20210525002032362-e6b600a154a87ab",
-                domain: "ashbys",
-                appId: "ashbys_platform_20210519051637170-05974c6d1405bb4"  // iOS app ID for JWT
-            },
-            spacefleet: {
-                name: "Space Fleet Command - Demo",
-                platformId: "ashbys_platform_20251002202138668-75114075e06b3a7",
-                domain: "ashbys",
-                appId: "ashbys_platform_20251002202138610-365afd4005450da"  // iOS app ID for JWT
-            }
-        }
-    };
-
-    // Initialize Firebase
-    const app = initializeApp(CONFIG.firebase);
-    const auth = getAuth(app);
-
-    // Application State
-    const STATE = {
-        currentUser: null,
-        selectedApp: 'mhn',
-        helpshiftInitialized: false,
-        helpshiftLoaded: false,
-        cifs: [],
-        initialCifs: null
-    };
-
-    // DOM Elements
-    const elements = {
-        email: document.getElementById('email'),
-        password: document.getElementById('password'),
-        btnSignIn: document.getElementById('btn-signin'),
-        btnSignUp: document.getElementById('btn-signup'),
-        btnSignOut: document.getElementById('btn-signout'),
-        authStatus: document.getElementById('auth-status'),
-        appSelector: document.getElementById('app-selector'),
-        platformId: document.getElementById('platform-id'),
-        presetSelector: document.getElementById('preset-selector'),
-        btnLoadPreset: document.getElementById('btn-load-preset'),
-        cifEditor: document.getElementById('cif-editor'),
-        btnAddCif: document.getElementById('btn-add-cif'),
-        btnLaunch: document.getElementById('btn-launch'),
-        launchStatus: document.getElementById('launch-status'),
-        jwtDisplay: document.getElementById('jwt-display'),
-        jwtToken: document.getElementById('jwt-token'),
-        btnCopyJwt: document.getElementById('btn-copy-jwt')
-    };
-
-    // CIF Manager
-    const CIFManager = {
-        fields: [],
-
-        addField(name = '', type = 'singleline', value = '') {
-            this.fields.push({ name, type, value });
-            this.render();
-        },
-
-        removeField(index) {
-            this.fields.splice(index, 1);
-            this.render();
-        },
-
-        updateField(index, field, value) {
-            this.fields[index][field] = value;
-        },
-
-        loadPreset(presetName) {
-            if (presetName === 'ai-agent') {
-                this.fields = [
-                    { name: 'ai_agent', type: 'singleline', value: 'care_agent' },
-                    { name: 'ai_conversation_key', type: 'singleline', value: this.generateKey() }
-                ];
-            } else if (presetName === 'custom') {
-                this.fields = [];
-            }
-            this.render();
-        },
-
-        generateKey() {
-            const chars = '0123456789abcdef';
-            return Array.from({ length: 16 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
-        },
-
-        toHelpshiftFormat() {
-            const cifs = {};
-            this.fields.forEach(field => {
-                if (field.name.trim()) {
-                    cifs[field.name] = {
-                        type: field.type,
-                        value: field.value
-                    };
+            jwtEndpoint: "https://helpshift-jwt-service-845835740344.us-central1.run.app",
+            apps: {
+                mhn: {
+                    name: "Monster Hunter Now",
+                    platformId: "sandbox-niantic_platform_20251112203107859-cea10d94de5560b",
+                    domain: "sandbox-niantic",
+                    appId: "sandbox-niantic_platform_20251112203107810-52423de7a082d8f"  // iOS app ID for JWT
+                },
+                ea: {
+                    name: "EA Client Demo",
+                    platformId: "ashbys_platform_20200902211516079-488178b85eeeceb",
+                    domain: "ashbys",
+                    appId: "ashbys_platform_20200902211516036-cd67ffa9e7ed41c"  // iOS app ID for JWT
+                },
+                careai: {
+                    name: "Care-AI Client Demo",
+                    platformId: "ashbys_platform_20250905022221454-66e3ededd13a0d1",
+                    domain: "ashbys",
+                    appId: "ashbys_platform_20250905022221399-f763e68fdc588e3"  // iOS app ID for JWT
+                },
+                sega: {
+                    name: "Sega Client Demo",
+                    platformId: "ashbys_platform_20210525002032362-e6b600a154a87ab",
+                    domain: "ashbys",
+                    appId: "ashbys_platform_20210519051637170-05974c6d1405bb4"  // iOS app ID for JWT
+                },
+                spacefleet: {
+                    name: "Space Fleet Command - Demo",
+                    platformId: "ashbys_platform_20251002202138668-75114075e06b3a7",
+                    domain: "ashbys",
+                    appId: "ashbys_platform_20251002202138610-365afd4005450da"  // iOS app ID for JWT
                 }
-            });
-            return cifs;
-        },
+            }
+        };
 
-        render() {
-            elements.cifEditor.innerHTML = '';
-            this.fields.forEach((field, index) => {
-                const row = document.createElement('div');
-                row.className = 'cif-row';
-                row.innerHTML = `
+        // Initialize Firebase
+        const app = initializeApp(CONFIG.firebase);
+        const auth = getAuth(app);
+
+        // Application State
+        const STATE = {
+            currentUser: null,
+            selectedApp: 'mhn',
+            helpshiftInitialized: false,
+            helpshiftLoaded: false,
+            cifs: [],
+            initialCifs: null
+        };
+
+        // DOM Elements
+        const elements = {
+            email: document.getElementById('email'),
+            password: document.getElementById('password'),
+            btnSignIn: document.getElementById('btn-signin'),
+            btnSignUp: document.getElementById('btn-signup'),
+            btnSignOut: document.getElementById('btn-signout'),
+            authStatus: document.getElementById('auth-status'),
+            appSelector: document.getElementById('app-selector'),
+            platformId: document.getElementById('platform-id'),
+            presetSelector: document.getElementById('preset-selector'),
+            btnLoadPreset: document.getElementById('btn-load-preset'),
+            cifEditor: document.getElementById('cif-editor'),
+            btnAddCif: document.getElementById('btn-add-cif'),
+            btnLaunch: document.getElementById('btn-launch'),
+            launchStatus: document.getElementById('launch-status'),
+            jwtDisplay: document.getElementById('jwt-display'),
+            jwtToken: document.getElementById('jwt-token'),
+            btnCopyJwt: document.getElementById('btn-copy-jwt')
+        };
+
+        // CIF Manager
+        const CIFManager = {
+            fields: [],
+
+            addField(name = '', type = 'singleline', value = '') {
+                this.fields.push({ name, type, value });
+                this.render();
+            },
+
+            removeField(index) {
+                this.fields.splice(index, 1);
+                this.render();
+            },
+
+            updateField(index, field, value) {
+                this.fields[index][field] = value;
+            },
+
+            loadPreset(presetName) {
+                if (presetName === 'ai-agent') {
+                    this.fields = [
+                        { name: 'ai_agent', type: 'singleline', value: 'care_agent' },
+                        { name: 'ai_conversation_key', type: 'singleline', value: this.generateKey() }
+                    ];
+                } else if (presetName === 'custom') {
+                    this.fields = [];
+                }
+                this.render();
+            },
+
+            generateKey() {
+                const chars = '0123456789abcdef';
+                return Array.from({ length: 16 }, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+            },
+
+            toHelpshiftFormat() {
+                const cifs = {};
+                this.fields.forEach(field => {
+                    if (field.name.trim()) {
+                        cifs[field.name] = {
+                            type: field.type,
+                            value: field.value
+                        };
+                    }
+                });
+                return cifs;
+            },
+
+            render() {
+                elements.cifEditor.innerHTML = '';
+                this.fields.forEach((field, index) => {
+                    const row = document.createElement('div');
+                    row.className = 'cif-row';
+                    row.innerHTML = `
                     <input type="text" class="cif-input" placeholder="Field name" value="${field.name}" data-index="${index}" data-field="name">
                     <select class="cif-select" data-index="${index}" data-field="type">
                         <option value="singleline" ${field.type === 'singleline' ? 'selected' : ''}>Single Line</option>
@@ -569,392 +576,389 @@
                     <input type="text" class="cif-input" placeholder="Value" value="${field.value}" data-index="${index}" data-field="value">
                     <button class="btn-remove" data-index="${index}">✕</button>
                 `;
-                elements.cifEditor.appendChild(row);
-            });
-
-            // Attach event listeners
-            document.querySelectorAll('.cif-input, .cif-select').forEach(el => {
-                el.addEventListener('input', (e) => {
-                    const index = parseInt(e.target.dataset.index);
-                    const field = e.target.dataset.field;
-                    CIFManager.updateField(index, field, e.target.value);
+                    elements.cifEditor.appendChild(row);
                 });
-            });
 
-            document.querySelectorAll('.btn-remove').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const index = parseInt(e.target.dataset.index);
-                    CIFManager.removeField(index);
+                // Attach event listeners
+                document.querySelectorAll('.cif-input, .cif-select').forEach(el => {
+                    el.addEventListener('input', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        const field = e.target.dataset.field;
+                        CIFManager.updateField(index, field, e.target.value);
+                    });
                 });
-            });
-        }
-    };
 
-    // Auth Manager
-    const AuthManager = {
-        async signIn(email, password) {
-            try {
-                const userCredential = await signInWithEmailAndPassword(auth, email, password);
-                showStatus('auth', `✅ Signed in as ${email}`, 'success');
-                return userCredential.user;
-            } catch (error) {
-                this.handleError(error);
-                throw error;
+                document.querySelectorAll('.btn-remove').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const index = parseInt(e.target.dataset.index);
+                        CIFManager.removeField(index);
+                    });
+                });
             }
-        },
+        };
 
-        async signUp(email, password) {
-            try {
-                const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-                showStatus('auth', `✅ Account created: ${email}`, 'success');
-                return userCredential.user;
-            } catch (error) {
-                this.handleError(error);
-                throw error;
-            }
-        },
+        // Auth Manager
+        const AuthManager = {
+            async signIn(email, password) {
+                try {
+                    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+                    showStatus('auth', `✅ Signed in as ${email}`, 'success');
+                    return userCredential.user;
+                } catch (error) {
+                    this.handleError(error);
+                    throw error;
+                }
+            },
 
-        async signOut() {
-            try {
-                await signOut(auth);
-                showStatus('auth', '⚪ Not authenticated', 'inactive');
-            } catch (error) {
-                this.handleError(error);
-            }
-        },
+            async signUp(email, password) {
+                try {
+                    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+                    showStatus('auth', `✅ Account created: ${email}`, 'success');
+                    return userCredential.user;
+                } catch (error) {
+                    this.handleError(error);
+                    throw error;
+                }
+            },
 
-        async getHelpshiftJWT(appId, useOldSystem = false) {
-            const user = auth.currentUser;
-            if (!user) throw new Error('Not authenticated');
+            async signOut() {
+                try {
+                    await signOut(auth);
+                    showStatus('auth', '⚪ Not authenticated', 'inactive');
+                } catch (error) {
+                    this.handleError(error);
+                }
+            },
 
-            const idToken = await user.getIdToken(true);
+            async getHelpshiftJWT(appId, username, useOldSystem = false) {
+                const user = auth.currentUser;
+                if (!user) throw new Error('Not authenticated');
 
-            // For old ID system, append _OLD to the app_id to use old secret
-            const requestAppId = useOldSystem ? `OLD_${appId}` : appId;
+                const idToken = await user.getIdToken(true);
 
-            const response = await fetch(CONFIG.jwtEndpoint, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${idToken}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ 
-                    app_id: requestAppId, 
-                    user_id: user.uid, 
-                    email: user.email 
-                })
-            });
+                // For old ID system, append _OLD to the app_id to use old secret
+                const requestAppId = useOldSystem ? `OLD_${appId}` : appId;
 
-            if (!response.ok) {
-                throw new Error(`JWT service error: ${response.status}`);
-            }
+                const response = await fetch(CONFIG.jwtEndpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${idToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ app_id: requestAppId, username })
+                });
 
-            const data = await response.json();
-            return data.jwt;
-        },
-
-        handleError(error) {
-            let message = '❌ Error: ';
-            switch (error.code) {
-                case 'auth/wrong-password':
-                    message += 'Incorrect password';
-                    break;
-                case 'auth/user-not-found':
-                    message += 'User not found. Sign up first.';
-                    break;
-                case 'auth/email-already-in-use':
-                    message += 'Email already registered';
-                    break;
-                case 'auth/weak-password':
-                    message += 'Password too weak (min 6 chars)';
-                    break;
-                case 'auth/invalid-email':
-                    message += 'Invalid email address';
-                    break;
-                default:
-                    message += error.message;
-            }
-            showStatus('auth', message, 'error');
-        }
-    };
-
-    // Widget Manager
-    const WidgetManager = {
-        async launch() {
-            if (!STATE.currentUser) {
-                showStatus('launch', '❌ Please sign in first', 'error');
-                return;
-            }
-
-            try {
-                elements.btnLaunch.disabled = true;
-                elements.btnLaunch.textContent = 'Launching...';
-
-                // Initialize if not already done
-                if (!STATE.helpshiftInitialized) {
-                    showStatus('launch', '⏳ Initializing Helpshift...', 'info');
-
-                    const appConfig = CONFIG.apps[STATE.selectedApp];
-
-                    // Get JWT first
-                    console.log('Getting JWT for app (New ID System):', appConfig.appId);
-                    const jwt = await AuthManager.getHelpshiftJWT(appConfig.appId, false);
-                    console.log('JWT received:', jwt.substring(0, 50) + '...');
-
-                    // Display JWT in UI
-                    elements.jwtToken.value = jwt;
-                    elements.jwtDisplay.classList.remove('hidden');
-
-                    // Configure Helpshift with Identity System (no CIFs here)
-                    window.helpshiftConfig = {
-                        platformId: appConfig.platformId,
-                        domain: appConfig.domain,
-                        language: 'en',
-                        authenticateWith: 'identities',
-                        userId: STATE.currentUser.email,
-                        userEmail: STATE.currentUser.email
-                    };
-
-                    console.log('Helpshift config set with authenticateWith: identities');
-
-                    // Load Helpshift SDK if not already loaded
-                    if (!STATE.helpshiftLoaded) {
-                        await this.loadHelpshiftSDK();
-                        STATE.helpshiftLoaded = true;
-                        console.log('Helpshift SDK loaded');
-
-                        // Set up event listener for login request
-                        window.Helpshift('addEventListener', 'onLoginRequest', (data) => {
-                            console.log('🔔 onLoginRequest event triggered!');
-                            console.log('Login request data:', data);
-
-                            // Login with identity token (note: identity_token not authToken)
-                            window.Helpshift('login', {
-                                identity_token: jwt,
-                                full_privacy_enabled: false
-                            });
-
-                            console.log('✅ Login called with identity_token');
-                        });
-
-                        console.log('Event listener registered for onLoginRequest');
-
-                        // Give SDK time to trigger login request
-                        await new Promise(resolve => setTimeout(resolve, 1000));
-                    }
-
-                    // Set Custom Issue Fields using the API (AFTER init)
-                    const cifs = CIFManager.toHelpshiftFormat();
-                    console.log('Setting Custom Issue Fields:', cifs);
-                    window.Helpshift('setCustomIssueFields', cifs);
-
-                    // Store initial CIFs for change detection
-                    STATE.initialCifs = JSON.stringify(cifs);
-                    STATE.helpshiftInitialized = true;
-                    showStatus('launch', `✅ Helpshift initialized with ${Object.keys(cifs).length} CIF(s)`, 'success');
-                } else {
-                    // Update CIFs if changed (can be done after initialization!)
-                    const cifs = CIFManager.toHelpshiftFormat();
-                    const currentCifs = JSON.stringify(cifs);
-
-                    if (currentCifs !== STATE.initialCifs) {
-                        console.log('CIFs changed, updating:', cifs);
-                        window.Helpshift('setCustomIssueFields', cifs);
-                        STATE.initialCifs = currentCifs;
-                        showStatus('launch', `✅ CIFs updated with ${Object.keys(cifs).length} field(s)`, 'success');
-                    }
+                if (!response.ok) {
+                    throw new Error(`JWT service error: ${response.status}`);
                 }
 
-                // Launch widget
-                console.log('Opening Helpshift widget');
-                window.Helpshift('open');
+                const data = await response.json();
+                return data.jwt;
+            },
 
-                showStatus('launch', `✅ Widget launched`, 'success');
-                elements.btnLaunch.disabled = false;
-                elements.btnLaunch.textContent = 'Launch Helpshift Widget';
-
-            } catch (error) {
-                console.error('Helpshift launch error:', error);
-                showStatus('launch', `❌ Launch failed: ${error.message}`, 'error');
-                elements.btnLaunch.disabled = false;
-                elements.btnLaunch.textContent = 'Launch Helpshift Widget';
+            handleError(error) {
+                let message = '❌ Error: ';
+                switch (error.code) {
+                    case 'auth/wrong-password':
+                        message += 'Incorrect password';
+                        break;
+                    case 'auth/user-not-found':
+                        message += 'User not found. Sign up first.';
+                        break;
+                    case 'auth/email-already-in-use':
+                        message += 'Email already registered';
+                        break;
+                    case 'auth/weak-password':
+                        message += 'Password too weak (min 6 chars)';
+                        break;
+                    case 'auth/invalid-email':
+                        message += 'Invalid email address';
+                        break;
+                    default:
+                        message += error.message;
+                }
+                showStatus('auth', message, 'error');
             }
-        },
+        };
 
-        async loadHelpshiftSDK() {
-            return new Promise((resolve, reject) => {
-                if (typeof window.Helpshift === 'function') {
-                    window.Helpshift('init');
-                    resolve();
+        // Widget Manager
+        const WidgetManager = {
+            async launch() {
+                if (!STATE.currentUser) {
+                    showStatus('launch', '❌ Please sign in first', 'error');
                     return;
                 }
 
-                // Use the official Helpshift loader pattern
-                !function(t,e){
-                    if("function"!=typeof window.Helpshift){
-                        var n=function(){n.q.push(arguments)};
-                        n.q=[],window.Helpshift=n;
-                        var i,a=t.getElementsByTagName("script")[0];
-                        if(t.getElementById(e)) {
-                            resolve();
-                            return;
-                        }
-                        i=t.createElement("script"),
-                        i.async=!0,i.id=e,i.src="https://webchat.helpshift.com/latest/webChat.js";
-                        var o=function(){
-                            window.Helpshift("init");
-                            resolve();
+                try {
+                    elements.btnLaunch.disabled = true;
+                    elements.btnLaunch.textContent = 'Launching...';
+
+                    // Initialize if not already done
+                    if (!STATE.helpshiftInitialized) {
+                        showStatus('launch', '⏳ Initializing Helpshift...', 'info');
+
+                        const appConfig = CONFIG.apps[STATE.selectedApp];
+
+                        // Get JWT first
+                        console.log('Getting JWT for app (New ID System):', appConfig.appId);
+                        const jwt = await AuthManager.getHelpshiftJWT(appConfig.appId, STATE.currentUser.email, false);
+                        console.log('JWT received:', jwt.substring(0, 50) + '...');
+
+                        // Display JWT in UI
+                        elements.jwtToken.value = jwt;
+                        elements.jwtDisplay.classList.remove('hidden');
+
+                        // Configure Helpshift with Identity System (no CIFs here)
+                        window.helpshiftConfig = {
+                            platformId: appConfig.platformId,
+                            domain: appConfig.domain,
+                            language: 'en',
+                            authenticateWith: 'identities',
+                            userId: STATE.currentUser.email,
+                            userEmail: STATE.currentUser.email
                         };
-                        i.onerror = reject;
-                        window.attachEvent?i.attachEvent("onload",o):
-                        i.addEventListener("load",o,!1),a.parentNode.insertBefore(i,a)
+
+                        console.log('Helpshift config set with authenticateWith: identities');
+
+                        // Load Helpshift SDK if not already loaded
+                        if (!STATE.helpshiftLoaded) {
+                            await this.loadHelpshiftSDK();
+                            STATE.helpshiftLoaded = true;
+                            console.log('Helpshift SDK loaded');
+
+                            // Set up event listener for login request
+                            window.Helpshift('addEventListener', 'onLoginRequest', (data) => {
+                                console.log('🔔 onLoginRequest event triggered!');
+                                console.log('Login request data:', data);
+
+                                // Login with identity token (note: identity_token not authToken)
+                                window.Helpshift('login', {
+                                    identity_token: jwt,
+                                    full_privacy_enabled: false
+                                });
+
+                                console.log('✅ Login called with identity_token');
+                            });
+
+                            console.log('Event listener registered for onLoginRequest');
+
+                            // Give SDK time to trigger login request
+                            await new Promise(resolve => setTimeout(resolve, 1000));
+                        }
+
+                        // Set Custom Issue Fields using the API (AFTER init)
+                        const cifs = CIFManager.toHelpshiftFormat();
+                        console.log('Setting Custom Issue Fields:', cifs);
+                        window.Helpshift('setCustomIssueFields', cifs);
+
+                        // Store initial CIFs for change detection
+                        STATE.initialCifs = JSON.stringify(cifs);
+                        STATE.helpshiftInitialized = true;
+                        showStatus('launch', `✅ Helpshift initialized with ${Object.keys(cifs).length} CIF(s)`, 'success');
                     } else {
-                        window.Helpshift("update");
-                        resolve();
+                        // Update CIFs if changed (can be done after initialization!)
+                        const cifs = CIFManager.toHelpshiftFormat();
+                        const currentCifs = JSON.stringify(cifs);
+
+                        if (currentCifs !== STATE.initialCifs) {
+                            console.log('CIFs changed, updating:', cifs);
+                            window.Helpshift('setCustomIssueFields', cifs);
+                            STATE.initialCifs = currentCifs;
+                            showStatus('launch', `✅ CIFs updated with ${Object.keys(cifs).length} field(s)`, 'success');
+                        }
                     }
-                }(document,"hs-chat");
-            });
+
+                    // Launch widget
+                    console.log('Opening Helpshift widget');
+                    window.Helpshift('open');
+
+                    showStatus('launch', `✅ Widget launched`, 'success');
+                    elements.btnLaunch.disabled = false;
+                    elements.btnLaunch.textContent = 'Launch Helpshift Widget';
+
+                } catch (error) {
+                    console.error('Helpshift launch error:', error);
+                    showStatus('launch', `❌ Launch failed: ${error.message}`, 'error');
+                    elements.btnLaunch.disabled = false;
+                    elements.btnLaunch.textContent = 'Launch Helpshift Widget';
+                }
+            },
+
+            async loadHelpshiftSDK() {
+                return new Promise((resolve, reject) => {
+                    if (typeof window.Helpshift === 'function') {
+                        window.Helpshift('init');
+                        resolve();
+                        return;
+                    }
+
+                    // Use the official Helpshift loader pattern
+                    !function (t, e) {
+                        if ("function" != typeof window.Helpshift) {
+                            var n = function () { n.q.push(arguments) };
+                            n.q = [], window.Helpshift = n;
+                            var i, a = t.getElementsByTagName("script")[0];
+                            if (t.getElementById(e)) {
+                                resolve();
+                                return;
+                            }
+                            i = t.createElement("script"),
+                                i.async = !0, i.id = e, i.src = "https://webchat.helpshift.com/latest/webChat.js";
+                            var o = function () {
+                                window.Helpshift("init");
+                                resolve();
+                            };
+                            i.onerror = reject;
+                            window.attachEvent ? i.attachEvent("onload", o) :
+                                i.addEventListener("load", o, !1), a.parentNode.insertBefore(i, a)
+                        } else {
+                            window.Helpshift("update");
+                            resolve();
+                        }
+                    }(document, "hs-chat");
+                });
+            }
+        };
+
+        // UI Helpers
+        function showStatus(type, message, status) {
+            if (type === 'auth') {
+                elements.authStatus.textContent = message;
+                elements.authStatus.className = `status status-${status}`;
+            } else if (type === 'launch') {
+                elements.launchStatus.textContent = message;
+                elements.launchStatus.className = `info-box`;
+                elements.launchStatus.classList.remove('hidden');
+            }
         }
-    };
 
-    // UI Helpers
-    function showStatus(type, message, status) {
-        if (type === 'auth') {
-            elements.authStatus.textContent = message;
-            elements.authStatus.className = `status status-${status}`;
-        } else if (type === 'launch') {
-            elements.launchStatus.textContent = message;
-            elements.launchStatus.className = `info-box`;
-            elements.launchStatus.classList.remove('hidden');
+        function updateUI() {
+            const isAuthenticated = !!STATE.currentUser;
+
+            // Update auth buttons and status
+            if (isAuthenticated) {
+                elements.btnSignOut.classList.remove('hidden');
+                elements.email.disabled = true;
+                elements.password.disabled = true;
+                elements.email.value = STATE.currentUser.email;
+                elements.btnSignIn.disabled = true;
+                elements.btnSignUp.disabled = true;
+                elements.btnLaunch.disabled = false;
+                showStatus('auth', `✅ Signed in as ${STATE.currentUser.email}`, 'success');
+            } else {
+                elements.btnSignOut.classList.add('hidden');
+                elements.email.disabled = false;
+                elements.password.disabled = false;
+                elements.email.value = '';
+                elements.password.value = '';
+                elements.btnSignIn.disabled = false;
+                elements.btnSignUp.disabled = false;
+                elements.btnLaunch.disabled = true;
+                showStatus('auth', '⚪ Not authenticated', 'inactive');
+            }
+
+            // Update app info
+            const appConfig = CONFIG.apps[STATE.selectedApp];
+            elements.platformId.textContent = appConfig.platformId;
+            document.querySelector('#app-info strong').nextSibling.textContent = ' ' + appConfig.name;
         }
-    }
 
-    function updateUI() {
-        const isAuthenticated = !!STATE.currentUser;
+        // Event Listeners
+        elements.btnSignIn.addEventListener('click', async () => {
+            const email = elements.email.value.trim();
+            const password = elements.password.value;
+            if (!email || !password) {
+                showStatus('auth', '❌ Please enter email and password', 'error');
+                return;
+            }
+            await AuthManager.signIn(email, password);
+        });
 
-        // Update auth buttons and status
-        if (isAuthenticated) {
-            elements.btnSignOut.classList.remove('hidden');
-            elements.email.disabled = true;
-            elements.password.disabled = true;
-            elements.email.value = STATE.currentUser.email;
-            elements.btnSignIn.disabled = true;
-            elements.btnSignUp.disabled = true;
-            elements.btnLaunch.disabled = false;
-            showStatus('auth', `✅ Signed in as ${STATE.currentUser.email}`, 'success');
-        } else {
-            elements.btnSignOut.classList.add('hidden');
-            elements.email.disabled = false;
-            elements.password.disabled = false;
-            elements.email.value = '';
-            elements.password.value = '';
-            elements.btnSignIn.disabled = false;
-            elements.btnSignUp.disabled = false;
+        elements.btnSignUp.addEventListener('click', async () => {
+            const email = elements.email.value.trim();
+            const password = elements.password.value;
+            if (!email || !password) {
+                showStatus('auth', '❌ Please enter email and password', 'error');
+                return;
+            }
+            await AuthManager.signUp(email, password);
+        });
+
+        elements.btnSignOut.addEventListener('click', async () => {
+            await AuthManager.signOut();
+            STATE.helpshiftInitialized = false;
             elements.btnLaunch.disabled = true;
-            showStatus('auth', '⚪ Not authenticated', 'inactive');
-        }
+        });
 
-        // Update app info
-        const appConfig = CONFIG.apps[STATE.selectedApp];
-        elements.platformId.textContent = appConfig.platformId;
-        document.querySelector('#app-info strong').nextSibling.textContent = ' ' + appConfig.name;
-    }
+        elements.appSelector.addEventListener('change', (e) => {
+            const newApp = e.target.value;
+            if (newApp !== STATE.selectedApp) {
+                // Save state
+                sessionStorage.setItem('helpshift_state', JSON.stringify({
+                    selectedApp: newApp,
+                    cifs: CIFManager.fields
+                }));
 
-    // Event Listeners
-    elements.btnSignIn.addEventListener('click', async () => {
-        const email = elements.email.value.trim();
-        const password = elements.password.value;
-        if (!email || !password) {
-            showStatus('auth', '❌ Please enter email and password', 'error');
-            return;
-        }
-        await AuthManager.signIn(email, password);
-    });
+                // Reload page to reinitialize with new app
+                window.location.reload();
+            }
+        });
 
-    elements.btnSignUp.addEventListener('click', async () => {
-        const email = elements.email.value.trim();
-        const password = elements.password.value;
-        if (!email || !password) {
-            showStatus('auth', '❌ Please enter email and password', 'error');
-            return;
-        }
-        await AuthManager.signUp(email, password);
-    });
+        elements.btnLoadPreset.addEventListener('click', () => {
+            const preset = elements.presetSelector.value;
+            if (!preset) {
+                alert('Please select a preset first');
+                return;
+            }
+            CIFManager.loadPreset(preset);
+        });
 
-    elements.btnSignOut.addEventListener('click', async () => {
-        await AuthManager.signOut();
-        STATE.helpshiftInitialized = false;
-        elements.btnLaunch.disabled = true;
-    });
+        elements.btnAddCif.addEventListener('click', () => {
+            CIFManager.addField();
+        });
 
-    elements.appSelector.addEventListener('change', (e) => {
-        const newApp = e.target.value;
-        if (newApp !== STATE.selectedApp) {
-            // Save state
-            sessionStorage.setItem('helpshift_state', JSON.stringify({
-                selectedApp: newApp,
-                cifs: CIFManager.fields
-            }));
+        elements.btnLaunch.addEventListener('click', () => {
+            WidgetManager.launch();
+        });
 
-            // Reload page to reinitialize with new app
-            window.location.reload();
-        }
-    });
+        elements.btnCopyJwt.addEventListener('click', () => {
+            elements.jwtToken.select();
+            document.execCommand('copy');
+            elements.btnCopyJwt.textContent = '✓ Copied!';
+            setTimeout(() => {
+                elements.btnCopyJwt.textContent = 'Copy JWT';
+            }, 2000);
+        });
 
-    elements.btnLoadPreset.addEventListener('click', () => {
-        const preset = elements.presetSelector.value;
-        if (!preset) {
-            alert('Please select a preset first');
-            return;
-        }
-        CIFManager.loadPreset(preset);
-    });
+        // Firebase Auth State Listener
+        onAuthStateChanged(auth, (user) => {
+            STATE.currentUser = user;
+            updateUI();
+        });
 
-    elements.btnAddCif.addEventListener('click', () => {
-        CIFManager.addField();
-    });
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Restore state if available
+            const saved = sessionStorage.getItem('helpshift_state');
+            if (saved) {
+                const state = JSON.parse(saved);
+                STATE.selectedApp = state.selectedApp || 'mhn';
+                CIFManager.fields = state.cifs || [];
+                elements.appSelector.value = STATE.selectedApp;
+                CIFManager.render();
+                sessionStorage.removeItem('helpshift_state');
+            } else {
+                // Load AI Agent preset by default only if no saved state
+                CIFManager.loadPreset('ai-agent');
+            }
 
-    elements.btnLaunch.addEventListener('click', () => {
-        WidgetManager.launch();
-    });
+            updateUI();
+        });
 
-    elements.btnCopyJwt.addEventListener('click', () => {
-        elements.jwtToken.select();
-        document.execCommand('copy');
-        elements.btnCopyJwt.textContent = '✓ Copied!';
-        setTimeout(() => {
-            elements.btnCopyJwt.textContent = 'Copy JWT';
-        }, 2000);
-    });
-
-    // Firebase Auth State Listener
-    onAuthStateChanged(auth, (user) => {
-        STATE.currentUser = user;
-        updateUI();
-    });
-
-    // Initialize on load
-    window.addEventListener('DOMContentLoaded', () => {
-        // Restore state if available
-        const saved = sessionStorage.getItem('helpshift_state');
-        if (saved) {
-            const state = JSON.parse(saved);
-            STATE.selectedApp = state.selectedApp || 'mhn';
-            CIFManager.fields = state.cifs || [];
-            elements.appSelector.value = STATE.selectedApp;
-            CIFManager.render();
-            sessionStorage.removeItem('helpshift_state');
-        } else {
-            // Load AI Agent preset by default only if no saved state
-            CIFManager.loadPreset('ai-agent');
-        }
-
-        updateUI();
-    });
-
-    // Expose for debugging
-    window.DEBUG = { STATE, CONFIG, CIFManager, AuthManager, WidgetManager };
-</script>
+        // Expose for debugging
+        window.DEBUG = { STATE, CONFIG, CIFManager, AuthManager, WidgetManager };
+    </script>
 
 </body>
+
 </html>
