@@ -639,13 +639,25 @@
                 // For old ID system, append _OLD to the app_id to use old secret
                 const requestAppId = useOldSystem ? `OLD_${appId}` : appId;
 
+                // Prepare request body
+                const body = { username };
+                
+                // WORKAROUND: The backend service is missing the specific secret env var for this new Niantic app.
+                // By omitting 'app_id', we force the backend to use the default HELPSHIFT_SECRET.
+                // This will only work if the Niantic app in Helpshift is configured with the same secret as the default one.
+                if (appId !== 'sandbox-niantic_platform_20251112203107810-52423de7a082d8f') {
+                    body.app_id = requestAppId;
+                } else {
+                    console.warn("⚠️ Workaround: Omitting app_id for Niantic to force default secret usage.");
+                }
+
                 const response = await fetch(CONFIG.jwtEndpoint, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${idToken}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ app_id: requestAppId, username })
+                    body: JSON.stringify(body)
                 });
 
                 if (!response.ok) {
