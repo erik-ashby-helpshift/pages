@@ -530,11 +530,13 @@
                 this.fields[index][field] = value;
             },
 
-            loadPreset(presetName) {
+            loadPreset(presetName, userEmail = '') {
                 if (presetName === 'ai-agent') {
                     this.fields = [
-                        { name: 'ai_agent', type: 'singleline', value: 'care_agent' },
-                        { name: 'ai_conversation_key', type: 'singleline', value: this.generateKey() }
+                        { name: 'player_level', type: 'number', value: '18' },
+                        { name: 'username', type: 'singleline', value: 'J8cob' },
+                        { name: 'vip_member', type: 'dropdown', value: 'Yes' },
+                        { name: 'email', type: 'singleline', value: userEmail }
                     ];
                 } else if (presetName === 'custom') {
                     this.fields = [];
@@ -932,7 +934,7 @@
                 alert('Please select a preset first');
                 return;
             }
-            CIFManager.loadPreset(preset);
+            CIFManager.loadPreset(preset, STATE.currentUser ? STATE.currentUser.email : '');
         });
 
         elements.btnAddCif.addEventListener('click', () => {
@@ -971,7 +973,7 @@
                 sessionStorage.removeItem('helpshift_state');
             } else {
                 // Load AI Agent preset by default only if no saved state
-                CIFManager.loadPreset('ai-agent');
+                CIFManager.loadPreset('ai-agent', STATE.currentUser ? STATE.currentUser.email : '');
             }
 
             updateUI();
