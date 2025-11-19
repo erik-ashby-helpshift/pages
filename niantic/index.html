@@ -317,13 +317,15 @@
 
             <div id="auth-form">
                 <div class="info-box" style="margin-bottom: 15px;">
-                    ℹ️ Default user: <strong>quantitest@quant.com</strong> / Password: <strong>Anything00</strong>
+                    ℹ️ Demo Users:<br>
+                    • <strong>j8cob@example.com</strong> (Pass: <strong>Anything00</strong>)<br>
+                    • <strong>8bit_hero@example.com</strong> (Pass: <strong>Anything00</strong>)
                 </div>
 
                 <div class="form-group">
                     <label class="form-label">Email</label>
                     <input type="email" id="email" class="form-input" placeholder="your.email@example.com"
-                        value="quantitest@quant.com">
+                        value="j8cob@example.com">
                 </div>
 
                 <div class="form-group">
@@ -344,42 +346,44 @@
             </div>
         </div>
 
-        <!-- Step 2: Select App -->
+        <!-- Step 2: Launch -->
         <div class="section">
             <div class="section-title">
-                <span class="icon">🎮</span>
-                <span>Step 2: Select App</span>
+                <span class="icon">🚀</span>
+                <span>Step 2: Launch Monster Hunter Now Support</span>
             </div>
 
-            <div class="form-group">
-                <label class="form-label">Choose Helpshift App</label>
-                <select id="app-selector" class="form-select">
-                    <option value="mhn">Monster Hunter Now</option>
-                    <option value="ea">EA Client Demo</option>
-                    <option value="careai">Care-AI Client Demo</option>
-                    <option value="sega">Sega Client Demo</option>
-                    <option value="spacefleet">Space Fleet Command - Demo</option>
-                </select>
+            <div class="button-group">
+                <button id="btn-launch" class="btn btn-success" disabled>Launch Helpshift Widget</button>
             </div>
 
-            <div id="app-info" class="info-box">
-                <strong>Selected:</strong> Monster Hunter Now<br>
-                <strong>Platform ID:</strong> <span
-                    id="platform-id">ashbys_platform_20251030223321331-cae75e82f606b6d</span>
+            <div class="info-box">
+                💡 Click to initialize and launch the support widget.
+            </div>
+
+            <div id="launch-status" class="info-box hidden">
+                Status will appear here...
+            </div>
+
+            <div id="jwt-display" class="info-box hidden" style="margin-top: 15px;">
+                <strong>JWT Token:</strong><br>
+                <textarea id="jwt-token" readonly
+                    style="width: 100%; height: 150px; font-family: monospace; font-size: 11px; margin-top: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
+                <button id="btn-copy-jwt" class="btn-add" style="margin-top: 10px;">Copy JWT</button>
             </div>
         </div>
 
-        <!-- Step 3: Custom Issue Fields -->
+        <!-- Optional: Custom Issue Fields -->
         <div class="section">
             <div class="section-title">
                 <span class="icon">⚙️</span>
-                <span>Step 3: Custom Issue Fields (CIFs)</span>
+                <span>Optional Settings: Custom Issue Fields (CIFs)</span>
             </div>
 
             <div class="preset-group">
                 <select id="preset-selector" class="form-select" style="flex: 1;">
                     <option value="">-- Select Preset --</option>
-                    <option value="ai-agent">AI Agent Template</option>
+                    <option value="ai-agent">Default (Game Data)</option>
                     <option value="custom">Custom (blank)</option>
                 </select>
                 <button id="btn-load-preset" class="btn btn-primary">Load Preset</button>
@@ -392,35 +396,22 @@
             <button id="btn-add-cif" class="btn-add">+ Add Custom Field</button>
 
             <div class="info-box">
-                💡 You can change CIFs and re-launch the widget without reloading the page
+                💡 Changes here will update the widget on next launch.
             </div>
         </div>
 
-        <!-- Step 4: Launch -->
-        <div class="section">
-            <div class="section-title">
-                <span class="icon">🚀</span>
-                <span>Step 4: Launch Helpshift</span>
+        <!-- Hidden App Selector (Preserved for logic but hidden from UI) -->
+        <div class="section hidden">
+            <div class="form-group">
+                <label class="form-label">Choose Helpshift App</label>
+                <select id="app-selector" class="form-select">
+                    <option value="mhn" selected>Monster Hunter Now</option>
+                </select>
             </div>
-
-            <div class="button-group">
-                <button id="btn-launch" class="btn btn-success" disabled>Launch Helpshift Widget</button>
-            </div>
-
-            <div class="info-box">
-                💡 Click to initialize and launch Helpshift with your configured CIFs. You can close the widget, change
-                CIFs, and launch again without reloading.
-            </div>
-
-            <div id="launch-status" class="info-box hidden">
-                Status will appear here...
-            </div>
-
-            <div id="jwt-display" class="info-box hidden" style="margin-top: 15px;">
-                <strong>JWT Token:</strong><br>
-                <textarea id="jwt-token" readonly
-                    style="width: 100%; height: 150px; font-family: monospace; font-size: 11px; margin-top: 10px; padding: 8px; border: 1px solid #ccc; border-radius: 4px;"></textarea>
-                <button id="btn-copy-jwt" class="btn-add" style="margin-top: 10px;">Copy JWT</button>
+            <div id="app-info" class="info-box">
+                <strong>Selected:</strong> Monster Hunter Now<br>
+                <strong>Platform ID:</strong> <span
+                    id="platform-id">ashbys_platform_20251030223321331-cae75e82f606b6d</span>
             </div>
         </div>
     </div>
@@ -530,13 +521,12 @@
                 this.fields[index][field] = value;
             },
 
-            loadPreset(presetName, userEmail = '') {
+            loadPreset(presetName) {
                 if (presetName === 'ai-agent') {
                     this.fields = [
                         { name: 'player_level', type: 'number', value: '18' },
                         { name: 'username', type: 'singleline', value: 'J8cob' },
-                        { name: 'vip_member', type: 'dropdown', value: 'Yes' },
-                        { name: 'email', type: 'singleline', value: userEmail }
+                        { name: 'vip_member', type: 'dropdown', value: 'Yes' }
                     ];
                 } else if (presetName === 'custom') {
                     this.fields = [];
@@ -934,7 +924,7 @@
                 alert('Please select a preset first');
                 return;
             }
-            CIFManager.loadPreset(preset, STATE.currentUser ? STATE.currentUser.email : '');
+            CIFManager.loadPreset(preset);
         });
 
         elements.btnAddCif.addEventListener('click', () => {
@@ -973,7 +963,7 @@
                 sessionStorage.removeItem('helpshift_state');
             } else {
                 // Load AI Agent preset by default only if no saved state
-                CIFManager.loadPreset('ai-agent', STATE.currentUser ? STATE.currentUser.email : '');
+                CIFManager.loadPreset('ai-agent');
             }
 
             updateUI();
