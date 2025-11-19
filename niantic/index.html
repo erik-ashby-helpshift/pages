@@ -698,27 +698,41 @@
                         showStatus('launch', '⏳ Initializing Helpshift...', 'info');
 
                         const appConfig = CONFIG.apps[STATE.selectedApp];
+                        const isNiantic = STATE.selectedApp === 'mhn'; // Legacy login for Niantic
 
-                        // Get JWT first
-                        console.log('Getting JWT for app (New ID System):', appConfig.appId);
-                        const jwt = await AuthManager.getHelpshiftJWT(appConfig.appId, STATE.currentUser.email, false);
-                        console.log('JWT received:', jwt.substring(0, 50) + '...');
+                        let jwt = null;
+                        
+                        // ONLY get JWT if NOT using legacy Niantic app
+                        if (!isNiantic) {
+                            // Get JWT first
+                            console.log('Getting JWT for app (New ID System):', appConfig.appId);
+                            jwt = await AuthManager.getHelpshiftJWT(appConfig.appId, STATE.currentUser.email, false);
+                            console.log('JWT received:', jwt.substring(0, 50) + '...');
 
-                        // Display JWT in UI
-                        elements.jwtToken.value = jwt;
-                        elements.jwtDisplay.classList.remove('hidden');
+                            // Display JWT in UI
+                            elements.jwtToken.value = jwt;
+                            elements.jwtDisplay.classList.remove('hidden');
+                        } else {
+                            console.log('Using Legacy Login for Niantic (No JWT)');
+                            elements.jwtDisplay.classList.add('hidden');
+                        }
 
-                        // Configure Helpshift with Identity System (no CIFs here)
+                        // Configure Helpshift
                         window.helpshiftConfig = {
                             platformId: appConfig.platformId,
                             domain: appConfig.domain,
                             language: 'en',
-                            authenticateWith: 'identities',
                             userId: STATE.currentUser.email,
                             userEmail: STATE.currentUser.email
                         };
 
-                        console.log('Helpshift config set with authenticateWith: identities');
+                        // Add 'authenticateWith' ONLY for non-legacy apps
+                        if (!isNiantic) {
+                            window.helpshiftConfig.authenticateWith = 'identities';
+                            console.log('Helpshift config set with authenticateWith: identities');
+                        } else {
+                            console.log('Helpshift config set for Legacy Login (no authenticateWith)');
+                        }
 
                         // Load Helpshift SDK if not already loaded
                         if (!STATE.helpshiftLoaded) {
@@ -731,13 +745,21 @@
                                 console.log('🔔 onLoginRequest event triggered!');
                                 console.log('Login request data:', data);
 
-                                // Login with identity token (note: identity_token not authToken)
-                                window.Helpshift('login', {
-                                    identity_token: jwt,
-                                    full_privacy_enabled: false
-                                });
-
-                                console.log('✅ Login called with identity_token');
+                                if (!isNiantic) {
+                                    // Login with identity token (note: identity_token not authToken)
+                                    window.Helpshift('login', {
+                                        identity_token: jwt,
+                                        full_privacy_enabled: false
+                                    });
+                                    console.log('✅ Login called with identity_token');
+                                } else {
+                                    // Legacy Login
+                                    window.Helpshift('login', {
+                                        userId: STATE.currentUser.email,
+                                        userEmail: STATE.currentUser.email
+                                    });
+                                    console.log('✅ Login called with userId/email (Legacy)');
+                                }
                             });
 
                             console.log('Event listener registered for onLoginRequest');
