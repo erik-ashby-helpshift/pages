@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alien Attack - Centered UI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            /* Using a dark space-themed gradient for the 'Game Background' */
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            color: #f8fafc;
+        }
+
+        /* The 'Game Background' container */
+        .viewport {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Centered Chat Container */
+        #chat-container {
+            width: 400px;
+            height: 650px;
+            background: #1e293b;
+            border-radius: 20px;
+            box-shadow: 0 0 80px rgba(0,0,0,0.8), 0 0 20px rgba(56, 189, 248, 0.2);
+            border: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 10;
+            transition: all 0.3s ease;
+        }
+
+        /* Auth Overlay: Appears inside the chat box before login */
+        #auth-overlay {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 { font-size: 22px; color: #38bdf8; margin-bottom: 10px; }
+        .header p { font-size: 13px; color: #94a3b8; margin-bottom: 30px; }
+
+        .form-group { text-align: left; margin-bottom: 15px; }
+        .form-label { display: block; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 5px; }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            background: #0f172a;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: #38bdf8;
+            border: none;
+            border-radius: 8px;
+            color: #0f172a;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        /* Target for Helpshift Embed */
+        #helpshift-target {
+            width: 100%;
+            height: 100%;
+            display: none; /* Hidden until login */
+        }
+
+        .status-msg { font-size: 12px; color: #94a3b8; margin-top: 20px; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="viewport">
+    <div id="chat-container">
+        <div id="auth-overlay">
+            <div class="header">
+                <h1>Alien Attack</h1>
+                <p>Support Command Center</p>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" id="email" class="form-input" value="quantitest@quant.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" value="Anything00">
+            </div>
+            <button id="btn-login" class="btn-primary">Sign in to Launch</button>
+            <div id="status" class="status-msg">Ready for deployment...</div>
+        </div>
+
+        <div id="helpshift-target"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    const CONFIG = {
+        firebase: {
+            apiKey: "AIzaSyBPIm-WOWxpNsgF9NbVjzfbSmTLPlIQkMw",
+            authDomain: "product-research-460317.firebaseapp.com",
+            projectId: "product-research-460317",
+            storageBucket: "product-research-460317.firebasestorage.app",
+            messagingSenderId: "845835740344",
+            appId: "1:845835740344:web:76d90d7c86c938562a404d"
+        },
+        jwtEndpoint: "https://helpshift-jwt-service-845835740344.us-central1.run.app",
+        app: {
+            platformId: "ashbys_platform_20260219131402152-56ba6780a32e312",
+            domain: "ashbys",
+            appId: "ashbys_platform_20260219131402096-74340cad083e005"
+        }
+    };
+
+    const firebaseApp = initializeApp(CONFIG.firebase);
+    const auth = getAuth(firebaseApp);
+
+    let hsInitialized = false;
+
+    async function launchEmbeddedChat(user) {
+        document.getElementById('status').innerText = "Establishing secure link...";
+        
+        try {
+            const idToken = await user.getIdToken(true);
+            const response = await fetch(CONFIG.jwtEndpoint, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ app_id: CONFIG.app.appId, username: 'demo_user' })
+            });
+            const { jwt } = await response.json();
+
+            // Prepare UI
+            document.getElementById('auth-overlay').classList.add('hidden');
+            document.getElementById('helpshift-target').style.display = 'block';
+
+            // Config for Embedded Mode
+            window.helpshiftConfig = {
+                platformId: CONFIG.app.platformId,
+                domain: CONFIG.app.domain,
+                language: 'en',
+                authenticateWith: 'identities',
+                userId: user.email,
+                userEmail: user.email,
+                embed: true, // Native Option 3
+                target: 'helpshift-target' // ID of the container
+            };
+
+            // Standard Loader
+            if (!hsInitialized) {
+                await new Promise(resolve => {
+                    !function(t,e){if("function"!=typeof window.Helpshift){var n=function(){n.q.push(arguments)};n.q=[],window.Helpshift=n;var i,a=t.getElementsByTagName("script")[0];i=t.createElement("script"),i.async=!0,i.id=e,i.src="https://webchat.helpshift.com/latest/webChat.js";var o=function(){window.Helpshift("init");resolve()};window.attachEvent?i.attachEvent("onload",o):i.addEventListener("load",o,!1),a.parentNode.insertBefore(i,a)}else{window.Helpshift("update");resolve()}}(document,"hs-chat");
+                });
+
+                window.Helpshift('addEventListener', 'onLoginRequest', () => {
+                    window.Helpshift('login', { identity_token: jwt });
+                });
+
+                window.Helpshift('setCustomIssueFields', {
+                    "ai_agent": { type: "singleline", value: "care_agent" },
+                    "ai_conversation_key": { type: "singleline", value: Math.random().toString(16).slice(2) }
+                });
+                hsInitialized = true;
+            }
+
+            // In embedded mode, 'open' displays it in the target div
+            window.Helpshift('open');
+
+        } catch (err) {
+            document.getElementById('status').innerText = "System Error: " + err.message;
+        }
+    }
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) launchEmbeddedChat(user);
+    });
+
+    document.getElementById('btn-login').onclick = async () => {
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+        try {
+            await signInWithEmailAndPassword(auth, email, pass);
+        } catch (e) {
+            alert("Login Failed: " + e.message);
+        }
+    };
+</script>
+</body>
+</html>
