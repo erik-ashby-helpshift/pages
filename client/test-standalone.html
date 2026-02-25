@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Standalone Auth</title>
+</head>
+<body>
+    <h1>Testing What Actually Worked</h1>
+    <button onclick="testAuth()">Test Authentication</button>
+    <div id="log" style="margin-top: 20px; font-family: monospace;"></div>
+
+<script>
+function log(msg) {
+    document.getElementById('log').innerHTML += msg + '<br>';
+    console.log(msg);
+}
+
+window.testAuth = function() {
+    log('Step 1: Configuring Helpshift...');
+
+    // Use the EXACT pattern from standalone that worked
+    window.helpshiftConfig = {
+        platformId: "ashbys_platform_20200902211516079-488178b85eeeceb",
+        domain: "ashbys",
+        language: 'en'
+    };
+
+    // Paste a real JWT token here from the cloud service
+    const jwt = document.getElementById('jwt-input').value || "PASTE_JWT_HERE";
+
+    if (jwt === "PASTE_JWT_HERE") {
+        log('❌ Please paste JWT in the input below first!');
+        return;
+    }
+
+    window.helpshiftConfig.onLoginRequest = function(identities, full_privacy_enabled) {
+        log('🔔 onLoginRequest FIRED!');
+        log('Identities: ' + JSON.stringify(identities));
+
+        window.Helpshift('login', {
+            authToken: jwt,
+            full_privacy_enabled: full_privacy_enabled || false
+        });
+
+        log('✅ Login called');
+    };
+
+    log('Step 2: Loading Helpshift SDK...');
+
+    !function(t,e){
+        if("function"!=typeof window.Helpshift){
+            var n=function(){n.q.push(arguments)};
+            n.q=[],window.Helpshift=n;
+            var i,a=t.getElementsByTagName("script")[0];
+            if(t.getElementById(e)) {
+                log('SDK already loaded');
+                return;
+            }
+            i=t.createElement("script"),
+            i.async=!0,i.id=e,i.src="https://webchat.helpshift.com/latest/webChat.js";
+            var o=function(){
+                log('✅ SDK loaded, calling init...');
+                window.Helpshift("init");
+                log('✅ Init called');
+            };
+            i.addEventListener("load",o,!1);
+            a.parentNode.insertBefore(i,a);
+        }
+    }(document,"hs-chat");
+};
+</script>
+
+<div style="margin-top: 20px;">
+    <label>Paste JWT from main app:</label><br>
+    <textarea id="jwt-input" style="width: 100%; height: 100px; font-family: monospace; font-size: 11px;"></textarea>
+</div>
+
+</body>
+</html>
