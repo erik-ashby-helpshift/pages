@@ -484,7 +484,7 @@
     // Application State
     const STATE = {
         currentUser: null,
-        selectedApp: 'quantiphi',
+        selectedApp: 'alien_attack', 
         helpshiftInitialized: false,
         helpshiftLoaded: false,
         cifs: [],
@@ -942,7 +942,7 @@
         const saved = sessionStorage.getItem('helpshift_state');
         if (saved) {
             const state = JSON.parse(saved);
-            STATE.selectedApp = state.selectedApp || 'quantiphi';
+            STATE.selectedApp = state.selectedApp || 'alien_attack';
             CIFManager.fields = state.cifs || [];
             elements.appSelector.value = STATE.selectedApp;
             CIFManager.render();
