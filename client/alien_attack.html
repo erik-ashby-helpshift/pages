@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Helpshift Quick-Launch: Alien Attack</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        .header {
+            background: #2d3436;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        .header h1 { font-size: 22px; margin-bottom: 5px; }
+        .header p { font-size: 13px; opacity: 0.8; }
+        .section { padding: 25px; border-bottom: 1px solid #eee; }
+        .section-title { font-weight: 700; margin-bottom: 15px; color: #333; display: flex; align-items: center; gap: 8px; }
+        .form-group { margin-bottom: 15px; }
+        .form-label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 5px; color: #666; }
+        .form-input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #edf2f7;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        .form-input:focus { outline: none; border-color: #667eea; }
+        .btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-success { background: #48bb78; color: white; margin-top: 10px; }
+        .btn-danger { background: #f56565; color: white; }
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .status { padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 10px; text-align: center; }
+        .status-inactive { background: #f7fafc; color: #718096; }
+        .status-success { background: #c6f6d5; color: #276749; }
+        .status-error { background: #fed7d7; color: #9b2c2c; }
+        .info-box { background: #ebf8ff; border-left: 4px solid #3182ce; padding: 12px; font-size: 12px; color: #2c5282; margin-top: 10px; }
+        .hidden { display: none; }
+        .app-badge { background: #edf2f7; padding: 4px 8px; border-radius: 4px; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🚀 Alien Attack Launcher</h1>
+        <p>Pre-configured for AI Agent Research</p>
+    </div>
+
+    <div class="section">
+        <div class="section-title">🔐 Authentication</div>
+        <div id="auth-form">
+            <div class="form-group">
+                <label class="form-label">Test Email</label>
+                <input type="email" id="email" class="form-input" value="quantitest@quant.com">
+            </div>
+            <div class="form-group">
+                <label class="form-label">Password</label>
+                <input type="password" id="password" class="form-input" value="Anything00">
+            </div>
+            <button id="btn-signin" class="btn btn-primary">Sign In to Launch</button>
+            <button id="btn-signout" class="btn btn-danger hidden">Sign Out</button>
+        </div>
+        <div id="auth-status" class="status status-inactive">⚪ Awaiting Sign-in</div>
+    </div>
+
+    <div class="section">
+        <div class="section-title">📋 Configuration Profile</div>
+        <div class="info-box">
+            <strong>Target App:</strong> <span class="app-badge">alien_attack</span><br>
+            <strong>CIF Template:</strong> <span class="app-badge">ai-agent-preset</span>
+        </div>
+        
+        <button id="btn-launch" class="btn btn-success" disabled>🚀 Launch Helpshift Widget</button>
+        
+        <div id="launch-status" class="status hidden"></div>
+    </div>
+</div>
+
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+
+    const CONFIG = {
+        firebase: {
+            apiKey: "AIzaSyBPIm-WOWxpNsgF9NbVjzfbSmTLPlIQkMw",
+            authDomain: "product-research-460317.firebaseapp.com",
+            projectId: "product-research-460317",
+            storageBucket: "product-research-460317.firebasestorage.app",
+            messagingSenderId: "845835740344",
+            appId: "1:845835740344:web:76d90d7c86c938562a404d"
+        },
+        jwtEndpoint: "https://helpshift-jwt-service-845835740344.us-central1.run.app",
+        app: {
+            name: "Alien Attack Command - Demo",
+            platformId: "ashbys_platform_20260219131402152-56ba6780a32e312",
+            domain: "ashbys",
+            appId: "ashbys_platform_20260219131402096-74340cad083e005"
+        }
+    };
+
+    const firebaseApp = initializeApp(CONFIG.firebase);
+    const auth = getAuth(firebaseApp);
+
+    let currentUser = null;
+    let hsInitialized = false;
+
+    // Fixed CIFs for AI Agent
+    const PRESET_CIFS = {
+        "ai_agent": { type: "singleline", value: "care_agent" },
+        "ai_conversation_key": { type: "singleline", value: Math.random().toString(16).slice(2) }
+    };
+
+    const elements = {
+        email: document.getElementById('email'),
+        password: document.getElementById('password'),
+        btnSignIn: document.getElementById('btn-signin'),
+        btnSignOut: document.getElementById('btn-signout'),
+        authStatus: document.getElementById('auth-status'),
+        btnLaunch: document.getElementById('btn-launch'),
+        launchStatus: document.getElementById('launch-status')
+    };
+
+    // UI State Management
+    onAuthStateChanged(auth, (user) => {
+        currentUser = user;
+        if (user) {
+            elements.authStatus.textContent = `✅ Authenticated: ${user.email}`;
+            elements.authStatus.className = "status status-success";
+            elements.btnSignIn.classList.add('hidden');
+            elements.btnSignOut.classList.remove('hidden');
+            elements.btnLaunch.disabled = false;
+        } else {
+            elements.authStatus.textContent = "⚪ Awaiting Sign-in";
+            elements.authStatus.className = "status status-inactive";
+            elements.btnSignIn.classList.remove('hidden');
+            elements.btnSignOut.classList.add('hidden');
+            elements.btnLaunch.disabled = true;
+        }
+    });
+
+    elements.btnSignIn.onclick = async () => {
+        try {
+            await signInWithEmailAndPassword(auth, elements.email.value, elements.password.value);
+        } catch (e) {
+            elements.authStatus.textContent = "❌ Auth Failed: " + e.message;
+            elements.authStatus.className = "status status-error";
+        }
+    };
+
+    elements.btnSignOut.onclick = () => signOut(auth);
+
+    elements.btnLaunch.onclick = async () => {
+        elements.btnLaunch.disabled = true;
+        elements.btnLaunch.textContent = "Initialising...";
+        
+        try {
+            if (!hsInitialized) {
+                const idToken = await currentUser.getIdToken(true);
+                const response = await fetch(CONFIG.jwtEndpoint, {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${idToken}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ app_id: CONFIG.app.appId, username: 'demo_user' })
+                });
+                const { jwt } = await response.json();
+
+                window.helpshiftConfig = {
+                    platformId: CONFIG.app.platformId,
+                    domain: CONFIG.app.domain,
+                    language: 'en',
+                    authenticateWith: 'identities',
+                    userId: currentUser.email,
+                    userEmail: currentUser.email
+                };
+
+                await loadHS();
+                
+                window.Helpshift('addEventListener', 'onLoginRequest', () => {
+                    window.Helpshift('login', { identity_token: jwt });
+                });
+
+                window.Helpshift('setCustomIssueFields', PRESET_CIFS);
+                hsInitialized = true;
+            }
+            
+            window.Helpshift('open');
+            elements.btnLaunch.textContent = "🚀 Launch Helpshift Widget";
+            elements.btnLaunch.disabled = false;
+        } catch (err) {
+            alert("Launch Error: " + err.message);
+            elements.btnLaunch.disabled = false;
+        }
+    };
+
+    function loadHS() {
+        return new Promise((resolve) => {
+            !function(t,e){if("function"!=typeof window.Helpshift){var n=function(){n.q.push(arguments)};n.q=[],window.Helpshift=n;var i,a=t.getElementsByTagName("script")[0];i=t.createElement("script"),i.async=!0,i.id=e,i.src="https://webchat.helpshift.com/latest/webChat.js";var o=function(){window.Helpshift("init");resolve()};window.attachEvent?i.attachEvent("onload",o):i.addEventListener("load",o,!1),a.parentNode.insertBefore(i,a)}else{window.Helpshift("update");resolve()}}(document,"hs-chat");
+        });
+    }
+</script>
+</body>
+</html>
