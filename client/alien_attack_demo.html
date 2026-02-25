@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alien Attack - Game UI Wrapper</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            /* Simulating the "Game Background" */
+            background: #0f172a; 
+            background-image: 
+                radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(139, 92, 246, 0.05) 0%, transparent 50%);
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* The simulated phone/handheld game screen */
+        .game-device-frame {
+            position: relative;
+            width: 420px; /* Slightly wider than the chat for a 'border' look */
+            height: 750px;
+            background: #1e293b;
+            border-radius: 40px;
+            border: 12px solid #334155;
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* The actual iframe container */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            /* This ensures the iframe content fits the rounded corners */
+            border-radius: 20px; 
+        }
+
+        /* Optional: Decorative "Speaker" and "Home" button for the device */
+        .device-notch {
+            height: 20px;
+            width: 100px;
+            background: #334155;
+            margin: 10px auto;
+            border-radius: 10px;
+            z-index: 20;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-device-frame">
+        <div class="device-notch"></div>
+        
+        <iframe 
+            src="https://erik-ashby-helpshift.github.io/pages/client/alien_attack.html" 
+            title="Helpshift Alien Attack"
+            allow="clipboard-read; clipboard-write">
+        </iframe>
+        
+        <div style="height: 30px;"></div> </div>
+
+</body>
+</html>
