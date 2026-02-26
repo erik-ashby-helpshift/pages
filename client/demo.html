@@ -8,13 +8,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
-            /* Change this line */
             background: url('https://erik-ashby-helpshift.github.io/pages/client/hsbackground002.png') no-repeat center center fixed;
-            
-            /* Add this to ensure it covers the whole screen */
             background-size: cover; 
-            
-            /* Keep these for centering the device */
             height: 100vh;
             width: 100vw;
             display: flex;
@@ -23,19 +18,16 @@
             overflow: hidden;
         }
 
-        /* The simulated phone/handheld game screen */
+        /* The simulated phone frame */
         .game-device-frame {
-            position: relative;
-            width: 420px; /* Slightly wider than the chat for a 'border' look */
-            height: 900px;
-            /* background: #1e293b; */
+            position: relative; /* Keep this for absolute positioning of the notch */
+            width: 420px; 
+            height: 850px; /* Adjusted height for better proportions */
             background: #0042ff;
             border-radius: 40px;
             border: 12px solid #334155;
             box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
+            overflow: hidden; /* Clips the iframe to the border-radius */
         }
 
         /* The actual iframe container */
@@ -43,18 +35,21 @@
             width: 100%;
             height: 100%;
             border: none;
-            /* This ensures the iframe content fits the rounded corners */
-            border-radius: 10px; 
+            display: block; /* Removes any tiny whitespace gaps at the bottom */
         }
 
-        /* Optional: Decorative "Speaker" and "Home" button for the device */
+        /* The "Speaker" Notch - Now floating over the iframe */
         .device-notch {
-            height: 20px;
-            width: 100px;
-            background: #334155;
-            margin: 10px auto;
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 8px;
+            width: 60px;
+            background: #1e293b;
             border-radius: 10px;
             z-index: 20;
+            opacity: 0.8; /* Makes it look integrated into the glass */
         }
     </style>
 </head>
@@ -68,8 +63,7 @@
             title="Helpshift Alien Attack"
             allow="clipboard-read; clipboard-write">
         </iframe>
-        
-        <div style="height: 30px;"></div> </div>
+    </div>
 
 </body>
 </html>
