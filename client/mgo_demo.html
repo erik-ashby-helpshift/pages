@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riot Games - Mobile AI Agent</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: url('https://erik-ashby-helpshift.github.io/pages/client/hsbackground001.png') no-repeat center center fixed;
+            background-size: cover; 
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* The simulated phone frame */
+        .game-device-frame {
+            position: relative; /* Keep this for absolute positioning of the notch */
+            width: 420px; 
+            height: 850px; /* Adjusted height for better proportions */
+            background: #0042ff;
+            border-radius: 40px;
+            border: 12px solid #040720;
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7);
+            overflow: hidden; /* Clips the iframe to the border-radius */
+        }
+
+        /* The actual iframe container */
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block; /* Removes any tiny whitespace gaps at the bottom */
+        }
+
+        /* The "Speaker" Notch - Now floating over the iframe */
+        .device-notch {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 8px;
+            width: 90px;
+            background: #040720;
+            border-radius: 10px;
+            z-index: 20;
+            opacity: 0.8; /* Makes it look integrated into the glass */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="game-device-frame">
+        <div class="device-notch"></div>
+        
+        <iframe 
+            src="https://erik-ashby-helpshift.github.io/pages/client/mgo_base_client.html" 
+            title="Helpshift Alien Attack"
+            allow="clipboard-read; clipboard-write">
+        </iframe>
+    </div>
+
+</body>
+</html>
